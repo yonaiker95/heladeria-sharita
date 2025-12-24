@@ -10,11 +10,6 @@ import Team from '@/app/components/home/Team';
 import Testimonial from '@/app/components/home/Testimonial';
 
 export default function Index() {
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.css file.
-   */
   return (
     <>
       <Carousel />
