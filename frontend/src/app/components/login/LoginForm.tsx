@@ -1,8 +1,44 @@
-// frontend/src/components/admin/LoginWithIllustration.tsx
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function LoginWithIllustration() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Email:', email, 'Password:', password);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+        router.push('/admin/dashboard');
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+
+    // Simulación de login
+    // if (email && password) {
+    //   router.push('/admin/dashboard');
+    // }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      
       {/* Panel izquierdo - Ilustración */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 p-12 flex-col justify-between">
         <div>
@@ -10,9 +46,11 @@ export default function LoginWithIllustration() {
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <span className="text-xl">🍦</span>
             </div>
-            <span className="text-white text-xl font-bold">Heladería Sharita</span>
+            <span className="text-white text-xl font-bold">
+              Heladería Sharita
+            </span>
           </div>
-          
+
           <div className="mt-16">
             <h2 className="text-4xl font-bold text-white mb-4">
               Panel de Control
@@ -36,21 +74,26 @@ export default function LoginWithIllustration() {
       {/* Panel derecho - Formulario */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          
           {/* Header para móvil */}
           <div className="lg:hidden text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Heladería Sharita</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Heladería Sharita
+            </h1>
             <p className="text-gray-600 mt-2">Panel de Administración</p>
           </div>
 
           {/* Formulario */}
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Bienvenido de nuevo</h2>
-              <p className="text-gray-500 mt-1">Ingresa a tu cuenta para continuar</p>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Bienvenido de nuevo
+              </h2>
+              <p className="text-gray-500 mt-1">
+                Ingresa a tu cuenta para continuar
+              </p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Correo electrónico
@@ -59,6 +102,7 @@ export default function LoginWithIllustration() {
                   type="email"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="tu@email.com"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -67,18 +111,19 @@ export default function LoginWithIllustration() {
                   <label className="block text-sm font-medium text-gray-700">
                     Contraseña
                   </label>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
+                  {/* <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
                     ¿Olvidaste?
-                  </a>
+                  </a> */}
                 </div>
                 <input
                   type="password"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   type="checkbox"
                   className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
@@ -86,7 +131,7 @@ export default function LoginWithIllustration() {
                 <label className="ml-2 text-sm text-gray-700">
                   Recordar dispositivo
                 </label>
-              </div>
+              </div> */}
 
               <button
                 type="submit"
@@ -94,6 +139,16 @@ export default function LoginWithIllustration() {
               >
                 Iniciar sesión
               </button>
+              {error && (
+                <div role="alert">
+                  <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+                    Error de inicio de sesión
+                  </div>
+                  <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                    <p>Las credenciales ingresadas son incorrectas. Por favor, inténtalo de nuevo.</p>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
 
@@ -102,10 +157,8 @@ export default function LoginWithIllustration() {
             <p>© 2024 Heladería Sharita. Todos los derechos reservados.</p>
             <p className="mt-1">v1.0.0</p>
           </div>
-
         </div>
       </div>
-
     </div>
   );
 }

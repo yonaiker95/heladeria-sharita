@@ -1,5 +1,5 @@
 // frontend/src/app/admin/login/page.tsx
-import LoginUI from '@/app/components/admin/LoginForm';
+import LoginUI from '@/app/components/login/LoginForm';
 
 export const metadata = {
   title: 'Iniciar Sesión - Admin | Heladería Sharita',
