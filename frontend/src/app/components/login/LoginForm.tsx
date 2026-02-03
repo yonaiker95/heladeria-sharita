@@ -3,39 +3,137 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginWithIllustration() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [debugInfo, setDebugInfo] = useState('');
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Email:', email, 'Password:', password);
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch('http://192.168.0.160:3000/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        // Importante: permite que el navegador reciba y guarde el Set-Cookie de Express
+        credentials: 'include',
       });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data.message);
-        router.push('/admin/dashboard');
-      } else {
-        setError(true);
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-    }
 
-    // Simulación de login
-    // if (email && password) {
-    //   router.push('/admin/dashboard');
-    // }
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Credenciales incorrectas');
+      }
+
+      // 1. Extraer el rol de la respuesta de tu API
+      const userRole = data.role; // 'admin' o 'user'
+
+      // 2. Establecer la cookie de rol para el Middleware
+      // Usamos SameSite=Lax para que el middleware la lea correctamente al redirigir
+      document.cookie = `user_role=${userRole}; path=/; max-age=3600; SameSite=Lax`;
+
+      // 3. Guardar datos no sensibles en localStorage para uso rápido en la UI
+      localStorage.setItem('user_role', userRole);
+
+      // 4. Redirigir según el rol
+      const targetPath =
+        userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+
+      // 5. Redirección con window.location.href
+      // ¿Por qué? router.push de Next.js a veces no dispara el middleware
+      // en la primera carga si las cookies acaban de cambiar.
+      // location.href garantiza una petición fresca al servidor.
+      window.location.href = targetPath;
+    } catch (err: any) {
+      setError(err.message);
+      console.error('Login Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState('');
+  // const [debugInfo, setDebugInfo] = useState('');
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError('');
+  //   setDebugInfo('Iniciando login...');
+
+  //   try {
+  //     setDebugInfo('Enviando datos a Express...');
+
+  //     // 1. Llamar a tu API Express
+  //     const response = await fetch('http://localhost:3000/api/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //       credentials: 'include', // ⭐ NECESARIO para cookies
+  //     });
+
+  //     setDebugInfo(`Respuesta recibida. Status: ${response.status}`);
+
+  //     // 2. Tu API devuelve: { message: "...", role: "admin"|"user" }
+  //     const data = await response.json();
+  //     setDebugInfo(prev => prev + `\nDatos: ${JSON.stringify(data)}`);
+
+  //     if (response.ok) {
+  //       // 3. Obtener el ROL de la respuesta
+  //       const userRole = data.role; // ← 'admin' o 'user'
+  //       setDebugInfo(prev => prev + `\nRol detectado: ${userRole}`);
+
+  //       // 4. ⭐⭐ GUARDAR EL ROL EN UNA COOKIE ⭐⭐
+  //       // Esto es lo que el middleware va a leer
+  //       const cookieString = `user_role=${userRole}; path=/; max-age=3600; SameSite=Lax`;
+  //       document.cookie = cookieString;
+
+  //       setDebugInfo(prev => prev + `\nCookie establecida: ${cookieString}`);
+
+  //       // 5. Mostrar todas las cookies actuales
+  //       setTimeout(() => {
+  //         console.log('🍪 TODAS las cookies después del login:', document.cookie);
+  //         setDebugInfo(prev => prev + `\nCookies actuales: ${document.cookie}`);
+  //       }, 100);
+
+  //       // 6. También guardar en localStorage (para el cliente)
+  //       localStorage.setItem('user_role', userRole);
+  //       localStorage.setItem('user_email', email);
+
+  //       // 7. Redirigir según rol
+  //       const dashboard = userRole === 'admin'
+  //         ? '/admin/dashboard'
+  //         : '/user/dashboard';
+
+  //       setDebugInfo(prev => prev + `\nRedirigiendo a: ${dashboard}`);
+
+  //       // 8. Redirigir CON RECARGA FORZADA
+  //       // Esto asegura que el middleware se ejecute de nuevo
+  //       setTimeout(() => {
+  //         window.location.href = dashboard;
+  //       }, 500);
+
+  //     } else {
+  //       setError(data.message || 'Error en login');
+  //       setDebugInfo(prev => prev + `\n❌ Error: ${data.message}`);
+  //     }
+
+  //   } catch (error: any) {
+  //     console.error('Error completo:', error);
+  //     setError('No se pudo conectar al servidor');
+  //     setDebugInfo(prev => prev + `\n❌ Catch error: ${error.message}`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -145,7 +243,10 @@ export default function LoginWithIllustration() {
                     Error de inicio de sesión
                   </div>
                   <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                    <p>Las credenciales ingresadas son incorrectas. Por favor, inténtalo de nuevo.</p>
+                    <p>
+                      Las credenciales ingresadas son incorrectas. Por favor,
+                      inténtalo de nuevo.
+                    </p>
                   </div>
                 </div>
               )}

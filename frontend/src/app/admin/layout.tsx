@@ -45,18 +45,8 @@ export default function AdminLayout({
   };
 
   const [activeItem, setActiveItem] = useState('/admin');
-  
-    const menuItems = [
-      { name: 'Dashboard', icon: '🏠', href: '/admin' },
-      { name: 'Productos', icon: '📦', href: '/admin/productos' },
-      { name: 'Pedidos', icon: '🛒', href: '/admin/pedidos' },
-      { name: 'Clientes', icon: '👥', href: '/admin/clientes' },
-      { name: 'Ventas', icon: '💰', href: '/admin/ventas' },
-      { name: 'Reportes', icon: '📊', href: '/admin/reportes' },
-      { name: 'Configuración', icon: '⚙️', href: '/admin/configuracion' },
-    ];
 
-      const handleItemClick = (href: string) => {
+    const handleItemClick = (href: string) => {
     setActiveItem(href);
     // if (isMobile && onClose) {
     //   onClose();
@@ -73,136 +63,14 @@ export default function AdminLayout({
       position: 'relative',
     }}>
       {/* Sidebar */}
-      <div
-        style={{
-          width: sidebarWidth,
-          backgroundColor: '#111827',
-          color: 'white',
-          position: isMobile ? 'fixed' : 'relative',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 50,
-          transition: 'width 0.3s ease, transform 0.3s ease',
-          overflow: 'hidden',
-          boxShadow: isMobile && sidebarOpen ? '2px 0 8px rgba(0,0,0,0.3)' : 'none',
-          transform: isMobile && !sidebarOpen ? 'translateX(-100%)' : 'translateX(0)',
-        }}
-      >
-        {/* Contenido del Sidebar aquí */}
-        <div style={{ padding: '20px', height: '100%', overflowY: 'auto' }}>
-          <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ 
-              width: '40px', 
-              height: '40px', 
-              borderRadius: '12px', 
-              background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '22px',
-              flexShrink: 0,
-            }}>
-              🍦
-            </div>
-            {sidebarOpen && (
-              <div>
-                <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Heladería Sharita</h1>
-                <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0 0' }}>Panel Admin</p>
-              </div>
-            )}
-          </div>
-          {/* Menú items... */}
-          <div style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '4px', 
-          width: '100%',
-          flex: 1,
-        }}>
-          {menuItems.map((item, idx) => {
-            const isActive = activeItem === item.href;
-            return (
-              <a
-                key={idx}
-                href={item.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleItemClick(item.href);
-                  console.log('Navegando a:', item.href);
-                  // Aquí iría la navegación real con router.push()
-                }}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  padding: '12px',
-                  color: isActive ? 'white' : '#9ca3af',
-                  textDecoration: 'none',
-                  fontSize: '22px',
-                  transition: 'all 0.2s',
-                  backgroundColor: isActive ? '#374151' : 'transparent',
-                  borderRadius: '8px',
-                  gap: '12px',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.color = 'white';
-                    e.currentTarget.style.backgroundColor = '#374151';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.currentTarget.style.color = '#9ca3af';
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <span style={{ 
-                  fontSize: '22px',
-                  lineHeight: 1,
-                  width: '24px',
-                  textAlign: 'center',
-                }}>
-                  {item.icon}
-                </span>
-                {sidebarOpen && (
-                  <span style={{ 
-                    fontSize: '14px',
-                    fontWeight: isActive ? '600' : '400',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '100%',
-                  }}>
-                    {item.name}
-                  </span>
-                )}
-              </a>
-            );
-          })}
-        </div>
-        </div>
-      </div>
+      <AdminSidebar
+        isMobile={isMobile}
+        sidebarOpen={sidebarOpen}
+        sidebarWidth={sidebarWidth}
+        setSidebarOpen={setSidebarOpen}
+      />
 
-      {/* Overlay para móvil */}
-      {isMobile && sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 40,
-          }}
-        />
-      )}
+
 
       {/* Contenido principal */}
       <div
@@ -278,7 +146,9 @@ export default function AdminLayout({
 
           {/* Resto del header... */}
           <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h1>header</h1>
+            <AdminHeader  
+              isMobile={isMobile}
+              />
             {/* Contenido del header */}
           </div>
         </div>

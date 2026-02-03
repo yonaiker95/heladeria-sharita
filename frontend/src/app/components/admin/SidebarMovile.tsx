@@ -1,5 +1,6 @@
 'use client';
-import { usePathname, useRouter } from 'next/navigation'; // Importaciones de Next.js
+
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface AdminSidebarProps {
@@ -7,17 +8,16 @@ interface AdminSidebarProps {
   sidebarOpen?: boolean;
   onClose?: () => void;
   sidebarWidth?: string;
-  setSidebarOpen: (open: boolean) => void; // Quitamos el opcional para evitar errores
 }
 
-export default function AdminSidebar({
+export default function AdminSidebarMobile({
   isMobile,
   sidebarOpen,
   onClose,
   sidebarWidth,
-  setSidebarOpen,
 }: AdminSidebarProps) {
-  const pathname = usePathname(); // Detecta la URL actual automáticamente
+  // 1. Detectamos la ruta actual automáticamente para el estado "active"
+  const pathname = usePathname();
   const router = useRouter();
 
   const menuItems = [
@@ -30,9 +30,10 @@ export default function AdminSidebar({
     { name: 'Configuración', icon: '⚙️', href: '/admin/configuracion' },
   ];
 
-  const handleItemClick = (href: string) => {
-    if (isMobile) {
-      setSidebarOpen(false); // Cerramos el sidebar en móvil tras click
+  // 2. Manejo de navegación y cierre de menú
+  const handleItemClick = () => {
+    if (isMobile && onClose) {
+      onClose();
     }
   };
 
@@ -50,12 +51,13 @@ export default function AdminSidebar({
           zIndex: 50,
           transition: 'width 0.3s ease, transform 0.3s ease',
           overflow: 'hidden',
-          boxShadow: isMobile && sidebarOpen ? '2px 0 8px rgba(0,0,0,0.3)' : 'none',
+          boxShadow: isMobile && sidebarOpen ? '2px 0 12px rgba(0,0,0,0.5)' : 'none',
           transform: isMobile && !sidebarOpen ? 'translateX(-100%)' : 'translateX(0)',
         }}
       >
-        <div style={{ padding: '20px', height: '100%', overflowY: 'auto' }}>
-          {/* Logo / Header */}
+        <div style={{ padding: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          
+          {/* Header del Sidebar */}
           <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
                 width: '40px', height: '40px', borderRadius: '12px',
@@ -63,7 +65,8 @@ export default function AdminSidebar({
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '22px', flexShrink: 0,
             }}>🍦</div>
-            {sidebarOpen && (
+            {/* Solo mostramos el texto si está abierto o si es móvil (donde siempre está "abierto" al verse) */}
+            {(sidebarOpen || isMobile) && (
               <div>
                 <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Heladería Sharita</h1>
                 <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0 0' }}>Panel Admin</p>
@@ -72,20 +75,20 @@ export default function AdminSidebar({
           </div>
 
           {/* Menú de Navegación */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
             {menuItems.map((item, idx) => {
-              // Verificamos si la ruta actual coincide con el href
+              // Comparamos la ruta actual con el href del item
               const isActive = pathname === item.href;
-              
+
               return (
                 <Link
                   key={idx}
                   href={item.href}
-                  onClick={() => handleItemClick(item.href)}
+                  onClick={handleItemClick}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: sidebarOpen ? 'flex-start' : 'center',
+                    justifyContent: (sidebarOpen || isMobile) ? 'flex-start' : 'center',
                     padding: '12px',
                     color: isActive ? 'white' : '#9ca3af',
                     textDecoration: 'none',
@@ -93,12 +96,13 @@ export default function AdminSidebar({
                     borderRadius: '8px',
                     gap: '12px',
                     transition: 'all 0.2s',
+                    cursor: 'pointer'
                   }}
                 >
-                  <span style={{ fontSize: '22px', width: '24px', textAlign: 'center' }}>
+                  <span style={{ fontSize: '20px', width: '24px', textAlign: 'center' }}>
                     {item.icon}
                   </span>
-                  {sidebarOpen && (
+                  {(sidebarOpen || isMobile) && (
                     <span style={{ fontSize: '14px', fontWeight: isActive ? '600' : '400' }}>
                       {item.name}
                     </span>
@@ -107,19 +111,32 @@ export default function AdminSidebar({
               );
             })}
           </nav>
+
+          {/* Botón de Logout (Opcional pero recomendado) */}
+          <button 
+            onClick={() => {/* lógica de borrar cookies y redirect */}}
+            style={{
+              marginTop: 'auto', padding: '12px', backgroundColor: 'transparent',
+              border: '1px solid #374151', color: '#f87171', borderRadius: '8px',
+              cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center',
+              justifyContent: (sidebarOpen || isMobile) ? 'flex-start' : 'center'
+            }}
+          >
+            🚪 {(sidebarOpen || isMobile) && <span>Cerrar Sesión</span>}
+          </button>
         </div>
       </div>
 
-      {/* Overlay para móvil mejorado */}
+      {/* Overlay: Solo visible en móvil cuando el sidebar está abierto */}
       {isMobile && sidebarOpen && (
         <div
-          onClick={() => setSidebarOpen(false)}
+          onClick={onClose}
           style={{
             position: 'fixed',
             top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(4px)',
             zIndex: 40,
-            backdropFilter: 'blur(2px)', // Toque moderno
           }}
         />
       )}
