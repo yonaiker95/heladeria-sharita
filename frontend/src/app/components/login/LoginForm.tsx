@@ -1,20 +1,20 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+// import { loginUser } from './LoginFetch';
 
 export default function LoginWithIllustration() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [debugInfo, setDebugInfo] = useState('');
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [, setLoading] = useState(false);
+  const [error, setError] = useState('');// Inicialización del router
+
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch('http://192.168.0.160:3000/api/login', {
+      const response = await fetch('https://incidents-specials-debug-originally.trycloudflare.com/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -54,86 +54,6 @@ export default function LoginWithIllustration() {
       setLoading(false);
     }
   };
-
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState('');
-  // const [debugInfo, setDebugInfo] = useState('');
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setError('');
-  //   setDebugInfo('Iniciando login...');
-
-  //   try {
-  //     setDebugInfo('Enviando datos a Express...');
-
-  //     // 1. Llamar a tu API Express
-  //     const response = await fetch('http://localhost:3000/api/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email, password }),
-  //       credentials: 'include', // ⭐ NECESARIO para cookies
-  //     });
-
-  //     setDebugInfo(`Respuesta recibida. Status: ${response.status}`);
-
-  //     // 2. Tu API devuelve: { message: "...", role: "admin"|"user" }
-  //     const data = await response.json();
-  //     setDebugInfo(prev => prev + `\nDatos: ${JSON.stringify(data)}`);
-
-  //     if (response.ok) {
-  //       // 3. Obtener el ROL de la respuesta
-  //       const userRole = data.role; // ← 'admin' o 'user'
-  //       setDebugInfo(prev => prev + `\nRol detectado: ${userRole}`);
-
-  //       // 4. ⭐⭐ GUARDAR EL ROL EN UNA COOKIE ⭐⭐
-  //       // Esto es lo que el middleware va a leer
-  //       const cookieString = `user_role=${userRole}; path=/; max-age=3600; SameSite=Lax`;
-  //       document.cookie = cookieString;
-
-  //       setDebugInfo(prev => prev + `\nCookie establecida: ${cookieString}`);
-
-  //       // 5. Mostrar todas las cookies actuales
-  //       setTimeout(() => {
-  //         console.log('🍪 TODAS las cookies después del login:', document.cookie);
-  //         setDebugInfo(prev => prev + `\nCookies actuales: ${document.cookie}`);
-  //       }, 100);
-
-  //       // 6. También guardar en localStorage (para el cliente)
-  //       localStorage.setItem('user_role', userRole);
-  //       localStorage.setItem('user_email', email);
-
-  //       // 7. Redirigir según rol
-  //       const dashboard = userRole === 'admin'
-  //         ? '/admin/dashboard'
-  //         : '/user/dashboard';
-
-  //       setDebugInfo(prev => prev + `\nRedirigiendo a: ${dashboard}`);
-
-  //       // 8. Redirigir CON RECARGA FORZADA
-  //       // Esto asegura que el middleware se ejecute de nuevo
-  //       setTimeout(() => {
-  //         window.location.href = dashboard;
-  //       }, 500);
-
-  //     } else {
-  //       setError(data.message || 'Error en login');
-  //       setDebugInfo(prev => prev + `\n❌ Error: ${data.message}`);
-  //     }
-
-  //   } catch (error: any) {
-  //     console.error('Error completo:', error);
-  //     setError('No se pudo conectar al servidor');
-  //     setDebugInfo(prev => prev + `\n❌ Catch error: ${error.message}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

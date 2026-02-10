@@ -45,7 +45,7 @@ export const loginController = async (req: Request, res: Response) => {
     });
 
     res.setHeader('Set-Cookie', serializedCookie);
-    return res.status(200).json({ message: 'Login successful', role: user[0].role });
+    return res.status(200).json({ message: 'Login successful', role: user[0].role, token: serializedCookie, });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error', error });
   }

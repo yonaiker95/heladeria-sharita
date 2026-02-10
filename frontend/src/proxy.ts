@@ -22,7 +22,7 @@ export async function proxy(request: NextRequest) {
 
   try {
     // 3. Verificación real del JWT (Extraemos el rol)
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     const userRole = payload.role as string;
 
@@ -52,7 +52,7 @@ export async function proxy(request: NextRequest) {
     }
 
     return NextResponse.next();
-  } catch (error) {
+  } catch (error: any) {
     // Si el token falla (expirado o manipulado)
     const response = NextResponse.redirect(new URL('/login', request.url));
     response.cookies.delete('myapp_token');

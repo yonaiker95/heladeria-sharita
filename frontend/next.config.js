@@ -12,6 +12,7 @@ const nextConfig = {
   nx: {},
   sassOptions: {
     includePaths: ['./styles', './app', './components'],
+    allowedDevOrigins: ['*'],
   },
 };
 
