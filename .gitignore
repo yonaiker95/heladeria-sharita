@@ -8,10 +8,13 @@ out-tsc
 # dependencies
 node_modules
 .env
+frontend/.env
+backend/.env
 **/.env
 **/.env.*
 !**/.env.example
 !**/.env*.example
+
 
 
 # IDEs and editors
