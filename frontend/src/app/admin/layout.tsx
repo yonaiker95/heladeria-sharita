@@ -1,7 +1,7 @@
 'use client';
 import '@/app/tailwind.css';
-import AdminSidebar from '@/app/components/admin/Sidebar';
-import AdminHeader from '@/app/components/admin/Header';
+import AdminSidebar from '@/app/components/admin/layout/Sidebar';
+import AdminHeader from '@/app/components/admin/layout/Header';
 
 
 import { useState, useEffect } from 'react';

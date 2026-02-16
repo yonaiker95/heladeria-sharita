@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
+import { TextEncoder } from 'util';
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get('myapp_token')?.value;
+  const token = request.cookies.get('token')?.value;
 
   // 1. Definir tipos de rutas
   const isAdminRoute = pathname.startsWith('/admin');
@@ -22,10 +23,9 @@ export async function proxy(request: NextRequest) {
 
   try {
     // 3. Verificación real del JWT (Extraemos el rol)
-    const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_SECRET);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     const userRole = payload.role as string;
-
     // --- LÓGICA DE REDIRECCIÓN ---
 
     // A. Redirigir raíces vacías: /admin -> /admin/dashboard y /user -> /user/dashboard
@@ -38,7 +38,8 @@ export async function proxy(request: NextRequest) {
 
     // B. Si está logueado e intenta ir a Login, Register o Home (/)
     if (isAuthPage || isHome) {
-      const target = userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+      const target =
+        userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
       return NextResponse.redirect(new URL(target, request.url));
     }
 
@@ -46,7 +47,7 @@ export async function proxy(request: NextRequest) {
     if (isAdminRoute && userRole !== 'admin') {
       return NextResponse.redirect(new URL('/user/dashboard', request.url));
     }
-    
+
     if (isUserRoute && userRole === 'admin') {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     }
@@ -55,7 +56,7 @@ export async function proxy(request: NextRequest) {
   } catch (error: any) {
     // Si el token falla (expirado o manipulado)
     const response = NextResponse.redirect(new URL('/login', request.url));
-    response.cookies.delete('myapp_token');
+    response.cookies.delete('token');
     return response;
   }
 }

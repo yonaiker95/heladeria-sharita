@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { supabase } from '../database/connectDB.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { serialize } from 'cookie';
+// import { serialize } from 'cookie';
 
 dotenv.config();
 
@@ -15,48 +15,52 @@ export const loginController = async (req: Request, res: Response) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('email, password_hash, role')
-      .eq('email', email);
-    console.log(data);
-    if (error || !user || user.length === 0 || user[0].email !== email) {
+      .select('*')
+      .eq('email', email)
+      .limit(1);
+
+    console.log(`Data received for login: ${JSON.stringify(user?.[0])}`);
+
+    if (error || !user[0] || user.length === 0) {
       return res
         .status(401)
         .json({ message: 'Login failed: Invalid credentials' });
     }
 
-    if (!validatePassword(password)) {
+    if (!validatePassword(password, user[0].password_hash)) {
       return res
         .status(401)
         .json({ message: 'Login failed: Invalid credentials' });
     }
 
     const token = jwt.sign(
-      { email: user[0].email, role: user[0].role },
+      { _id: user[0].id, role: user[0].role },
       process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '1h' }
     );
 
-    const serializedCookie = serialize('myapp_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60,
-      path: '/',
+    return res.status(200).json({
+      success: true,
+      message: 'Login successful',
+      role: user[0].role,
+      token: token,
     });
-
-    res.setHeader('Set-Cookie', serializedCookie);
-    return res.status(200).json({ message: 'Login successful', role: user[0].role, token: serializedCookie, });
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error', error });
+    return res.status(500).json({ 
+      success: false,
+      message: 'Internal server error', 
+      error: error 
+    });
   }
 };
 
 const validatePassword = (
-  inputPassword: string
-  //   storedHash: string
+  inputPassword: string,
+  storedHash: string
 ): boolean => {
   return bcrypt.compareSync(
     inputPassword,
-    '$2b$10$KxqMDUHKD/zRJuGzCUZ6du3OrUYTlZGQa.OGpDsy2X3W/Rldt9uaG'
+    storedHash
+    
   );
 };

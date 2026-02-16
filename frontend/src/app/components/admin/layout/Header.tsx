@@ -1,6 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { logoutUser } from '../../login/AuthFetch';
 
 interface AdminSidebarProps {
   isMobile?: boolean;
@@ -20,17 +21,9 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
   }, []);
 
   const handleLogout = () => {
-    // 1. Borrar cookies de cliente
-    document.cookie =
-      'myapp_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
-    document.cookie =
-      'user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
-
-    // 2. Limpiar localStorage
-    localStorage.removeItem('user_role');
-
-    // 3. Redirigir al login (fuerza recarga para que el middleware actúe)
-    window.location.href = '/login';
+    logoutUser().then(() => {
+      router.push('/login');
+    });
   };
 
   return (

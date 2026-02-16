@@ -1,55 +1,31 @@
 'use client';
 import { useState } from 'react';
-// import { loginUser } from './LoginFetch';
+import { loginUser } from './AuthFetch';
 
 export default function LoginWithIllustration() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [, setLoading] = useState(false);
-  const [error, setError] = useState('');// Inicialización del router
+  const [error, setError] = useState('');
 
-   const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch('https://incidents-specials-debug-originally.trycloudflare.com/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        // Importante: permite que el navegador reciba y guarde el Set-Cookie de Express
-        credentials: 'include',
-      });
+      await loginUser(email, password).then((res) => {
+        if (!res.success === true) {
+          setError('Credenciales incorrectas');
+        }
+        window.location.reload();
+    })
 
-      const data = await response.json();
+      
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Credenciales incorrectas');
-      }
-
-      // 1. Extraer el rol de la respuesta de tu API
-      const userRole = data.role; // 'admin' o 'user'
-
-      // 2. Establecer la cookie de rol para el Middleware
-      // Usamos SameSite=Lax para que el middleware la lea correctamente al redirigir
-      document.cookie = `user_role=${userRole}; path=/; max-age=3600; SameSite=Lax`;
-
-      // 3. Guardar datos no sensibles en localStorage para uso rápido en la UI
-      localStorage.setItem('user_role', userRole);
-
-      // 4. Redirigir según el rol
-      const targetPath =
-        userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
-
-      // 5. Redirección con window.location.href
-      // ¿Por qué? router.push de Next.js a veces no dispara el middleware
-      // en la primera carga si las cookies acaban de cambiar.
-      // location.href garantiza una petición fresca al servidor.
-      window.location.href = targetPath;
+      
     } catch (err: any) {
       setError(err.message);
-      console.error('Login Error:', err);
     } finally {
       setLoading(false);
     }
@@ -157,15 +133,14 @@ export default function LoginWithIllustration() {
               >
                 Iniciar sesión
               </button>
-              {error && (
+              { error && (
                 <div role="alert">
                   <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
                     Error de inicio de sesión
                   </div>
-                  <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                  <div className="flex border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700 items-center justify-center">
                     <p>
-                      Las credenciales ingresadas son incorrectas. Por favor,
-                      inténtalo de nuevo.
+                      {error}
                     </p>
                   </div>
                 </div>
