@@ -28,19 +28,7 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
 
   return (
     <header
-      style={{
-        height: '64px',
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        padding: '0 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        position: 'sticky',
-        top: 0,
-        width: '100%',
-        zIndex: 40, // Por debajo del sidebar móvil pero sobre el contenido
-      }}
+      className="sticky top-0 w-full h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-end z-40"
     >
       {/* Lado Izquierdo - Buscador */}
       <div style={{ flex: '1'}}>

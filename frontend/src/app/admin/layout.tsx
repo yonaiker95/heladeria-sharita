@@ -2,16 +2,9 @@
 import '@/app/tailwind.css';
 import AdminSidebar from '@/app/components/admin/layout/Sidebar';
 import AdminHeader from '@/app/components/admin/layout/Header';
-
-
 import { useState, useEffect } from 'react';
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarWidth, setSidebarWidth] = useState('250px');
@@ -24,14 +17,12 @@ export default function AdminLayout({
       setSidebarOpen(!mobile); // En móvil, sidebar cerrada por defecto
       setSidebarWidth(mobile ? '0px' : '250px');
     };
-
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Actualizar sidebar width cuando cambia el estado
+  // Actualizar ancho del sidebar según estado (abierto/cerrado)
   useEffect(() => {
     if (isMobile) {
       setSidebarWidth(sidebarOpen ? '280px' : '0px');
@@ -40,29 +31,11 @@ export default function AdminLayout({
     }
   }, [sidebarOpen, isMobile]);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
-  const [activeItem, setActiveItem] = useState('/admin');
-
-    const handleItemClick = (href: string) => {
-    setActiveItem(href);
-    // if (isMobile && onClose) {
-    //   onClose();
-    // }
-  };
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      minHeight: '100vh', 
-      backgroundColor: '#f9fafb',
-      width: '100%',
-      overflowX: 'hidden',
-      position: 'relative',
-    }}>
-      {/* Sidebar */}
+    <div className="flex h-screen w-full overflow-hidden bg-gray-50">
+      {/* Sidebar: en escritorio es relative, en móvil es fixed (controlado dentro del componente) */}
       <AdminSidebar
         isMobile={isMobile}
         sidebarOpen={sidebarOpen}
@@ -70,101 +43,35 @@ export default function AdminLayout({
         setSidebarOpen={setSidebarOpen}
       />
 
-
-
-      {/* Contenido principal */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-          width: '100%',
-          transition: 'margin-left 0.3s ease',
-          marginLeft: isMobile ? '0' : (sidebarOpen ? '0px' : '0px'),
-        }}
-      >
-        {/* Header */}
-        <div style={{
-          height: 'clamp(56px, 8vw, 64px)',
-          backgroundColor: 'white',
-          borderBottom: '1px solid #e5e7eb',
-          padding: '0 clamp(12px, 3vw, 24px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'sticky',
-          top: 0,
-          zIndex: 30,
-          flexWrap: 'wrap',
-          gap: '12px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        }}>
-          {/* Botón para toggle sidebar en móvil */}
-          {isMobile && (
-            <button
-              onClick={toggleSidebar}
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '8px',
-                backgroundColor: '#f3f4f6',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '20px',
-              }}
-              aria-label="Menú"
-            >
-              ☰
-            </button>
-          )}
-
-          {/* Botón para toggle sidebar en desktop */}
-          {!isMobile && (
-            <button
-              onClick={toggleSidebar}
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '8px',
-                backgroundColor: '#f3f4f6',
-                border: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '20px',
-              }}
-              aria-label={sidebarOpen ? "Colapsar menú" : "Expandir menú"}
-            >
-              {sidebarOpen ? '←' : '→'}
-            </button>
-          )}
-
-          {/* Resto del header... */}
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <AdminHeader  
-              isMobile={isMobile}
-              />
-            {/* Contenido del header */}
+      {/* Área principal (derecha) */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header sticky */}
+        <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 bg-white border-b border-gray-200 px-[clamp(12px,3vw,24px)] h-[clamp(56px,8vw,64px)] shadow-sm">
+          <button
+            onClick={toggleSidebar}
+            className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-2xl hover:bg-gray-200 transition-colors shrink-0"
+            aria-label={sidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
+          >
+            {isMobile ? '☰' : (sidebarOpen ? '←' : '→')}
+          </button>
+          <div className="flex-1 flex justify-between items-center min-w-0">
+            <AdminHeader isMobile={isMobile} />
           </div>
-        </div>
+        </header>
 
-        {/* Contenido principal */}
-        <main style={{
-          flex: 1,
-          padding: 'clamp(16px, 4vw, 24px)',
-          overflowY: 'auto',
-          backgroundColor: '#f9fafb',
-          minHeight: 'calc(100vh - clamp(56px, 8vw, 64px))',
-          boxSizing: 'border-box',
-        }}>
+        {/* Contenido scrolleable */}
+        <main className="flex-1 overflow-y-auto p-[clamp(16px,4vw,24px)] bg-gray-50">
           {children}
         </main>
       </div>
+
+      {/* Overlay para móvil cuando el sidebar está abierto */}
+      {isMobile && sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 backdrop-blur-[2px]"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 }
