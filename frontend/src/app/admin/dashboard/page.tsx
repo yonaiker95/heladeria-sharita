@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { SalesData } from '../../components/admin/dashboard/SellerUpdate';
 import { RecentOrders } from '@/app/components/admin/dashboard/RecentOrders';
+import Link from 'next/link';
+import { BestSellingProducts } from '@/app/components/admin/dashboard/bestSsellingProducts';
+import { MinimumQuantity } from '@/app/components/admin/dashboard/minimumQuantity';
 
 export default function AdminDashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -36,8 +39,6 @@ export default function AdminDashboard() {
       icon: '👥',
     },
   ]);
-
-  const [orders, setOrders] = useState([]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -324,7 +325,6 @@ export default function AdminDashboard() {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               marginBottom: 'clamp(16px, 4vw, 24px)',
-              flexDirection: 'column',
               gap: '12px',
             }}
           >
@@ -376,7 +376,6 @@ export default function AdminDashboard() {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               marginBottom: 'clamp(16px, 4vw, 24px)',
-              flexDirection: 'column',
               gap: '12px',
             }}
           >
@@ -408,56 +407,10 @@ export default function AdminDashboard() {
             </div>
           </div>
           <RecentOrders refreshTrigger={refreshTrigger} />
-          {/* <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 3vw, 16px)', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
-            {orders.map((order, idx) => (
-              <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: 'clamp(12px, 3vw, 16px)', backgroundColor: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'clamp(8px, 2vw, 16px)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 16px)', minWidth: '0' }}>
-                    <div style={{ width: 'clamp(32px, 8vw, 40px)', height: 'clamp(32px, 8vw, 40px)', backgroundColor: '#dbeafe', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: '0' }}>
-                      <span style={{ fontSize: 'clamp(16px, 4vw, 20px)', lineHeight: '1' }}>🍦</span>
-                    </div>
-                    <div style={{ minWidth: '0', flex: '1' }}>
-                      <p style={{ fontWeight: '500', color: '#111827', fontSize: 'clamp(14px, 3vw, 16px)', margin: '0 0 4px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.id}</p>
-                      <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#6b7280', margin: '0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{order.customer}</p>
-                    </div>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <p style={{ fontWeight: '500', color: '#111827', fontSize: 'clamp(14px, 3vw, 16px)', margin: '0' }}>{order.total}</p>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 2vw, 8px)', flexWrap: 'wrap' }}>
-                    <span style={{ 
-                      fontSize: 'clamp(10px, 2.5vw, 12px)', 
-                      padding: 'clamp(3px, 1vw, 4px) clamp(6px, 2vw, 8px)', 
-                      borderRadius: '9999px', 
-                      backgroundColor: order.status === 'Completado' ? '#d1fae5' : order.status === 'En preparación' ? '#fef3c7' : '#fee2e2',
-                      color: order.status === 'Completado' ? '#065f46' : order.status === 'En preparación' ? '#92400e' : '#991b1b',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {order.status}
-                    </span>
-                    <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', color: '#6b7280' }}>{order.time}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
-          <button
-            style={{
-              width: '100%',
-              marginTop: 'clamp(16px, 4vw, 24px)',
-              padding: 'clamp(10px, 3vw, 12px)',
-              textAlign: 'center',
-              color: '#2563eb',
-              fontWeight: '500',
-              borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              fontSize: 'clamp(12px, 3vw, 14px)',
-            }}
-          >
-            Ver todos los pedidos
-          </button>
+
+          <div className="w-full mt-[clamp(16px,4vw,24px)] px-[clamp(10px,3vw,12px)] py-[clamp(10px,3vw,12px)] text-center text-blue-600 font-medium rounded-lg border border-gray-300 bg-transparent cursor-pointer text-[clamp(12px,3vw,14px)]">
+            <Link href="/admin/orders">Ver todos los pedidos</Link>
+          </div>
         </div>
       </div>
 
@@ -494,7 +447,8 @@ export default function AdminDashboard() {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
           >
-            {[
+            <BestSellingProducts refreshTrigger={refreshTrigger} />
+            {/* {[
               {
                 name: 'Helado de Vainilla',
                 sales: 142,
@@ -630,7 +584,7 @@ export default function AdminDashboard() {
                   </svg>
                 </div>
               </div>
-            ))}
+            ))} */}
           </div>
         </div>
 
@@ -650,9 +604,8 @@ export default function AdminDashboard() {
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'flex-start',
               marginBottom: 'clamp(16px, 4vw, 24px)',
-              flexDirection: 'column',
+              alignItems: 'flex-start',
               gap: '12px',
             }}
           >
@@ -686,9 +639,7 @@ export default function AdminDashboard() {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
           >
-            <p style={{ color: '#6b7280', fontSize: '14px' }}>
-              No hay alertas críticas en este momento.
-            </p>
+              <MinimumQuantity refreshTrigger={refreshTrigger} />
           </div>
         </div>
       </div>

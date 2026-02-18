@@ -2,15 +2,31 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { logoutUser } from '../../login/AuthFetch';
+import { UserInfo } from './user';
 
 interface AdminSidebarProps {
   isMobile?: boolean;
 }
 
-export default function AdminHeader({ isMobile }: AdminSidebarProps) {
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  is_active: boolean;
+  permission: {
+    permission: string;
+  };
+}
+
+export const AdminHeader = ({ isMobile }: AdminSidebarProps) => {
+  const [userData, setUserData] = useState<User[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
   useEffect(() => {
     // Función para verificar el ancho
     const checkSize = () => setIsDesktop(window.innerWidth >= 640);
@@ -26,12 +42,26 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
     });
   };
 
+  useEffect(() => {
+    const fetchSales = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data: User[] = await UserInfo();
+        setUserData(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSales();
+  }, []);
+
   return (
-    <header
-      className="sticky top-0 w-full h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-end z-40"
-    >
+    <header className="sticky top-0 w-full h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-end z-40">
       {/* Lado Izquierdo - Buscador */}
-      <div style={{ flex: '1'}}>
+      <div style={{ flex: '1' }}>
         <div style={{ position: 'relative' }}>
           <span
             style={{
@@ -140,7 +170,7 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
                   color: '#111827',
                 }}
               >
-                Admin
+                {loading ? 'Cargando...' : userData.name}
               </p>
               <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
                 Ver perfil
@@ -161,7 +191,7 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               }}
             >
-              A
+              {loading ? '?' : userData.name.charAt(0).toUpperCase()}
             </div>
           </button>
 
@@ -188,7 +218,7 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
                   Conectado como
                 </p>
                 <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>
-                  admin@heladeria.com
+                  {loading ? 'Cargando...' : userData.email}
                 </p>
               </div>
               <button
@@ -240,4 +270,5 @@ export default function AdminHeader({ isMobile }: AdminSidebarProps) {
       </div>
     </header>
   );
-}
+};
+export default AdminHeader;

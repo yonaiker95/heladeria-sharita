@@ -8,13 +8,18 @@ interface recentOrders {
   product_name: string;
   total_price: string;
   created_at: string;
+  status: 'Completado' | 'En preparación' | 'Cancelado' | 'Pendiente';
   customer: {
     name: string;
     email: string;
-  }[];
+  };
 }
 
-export const RecentOrders = ({ refreshTrigger }: { refreshTrigger?: any }) => {
+interface Refresh {
+  refreshTrigger: number;
+}
+
+export const RecentOrders = (refreshTrigger: Refresh) => {
   const [recentOrders, setRecentOrders] = useState<recentOrders[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +71,7 @@ export const RecentOrders = ({ refreshTrigger }: { refreshTrigger?: any }) => {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-medium text-gray-900 text-[clamp(14px,3vw,16px)] m-0 mb-1 truncate">
-                  {order.invoice_number}
+                  # {order.invoice_number}
                 </p>
                 <p className="text-[clamp(12px,3vw,14px)] text-gray-500 m-0 truncate">
                   {order.customer.name}
@@ -84,11 +89,7 @@ export const RecentOrders = ({ refreshTrigger }: { refreshTrigger?: any }) => {
               text-[clamp(10px,2.5vw,12px)] px-[clamp(6px,2vw,8px)] py-[clamp(3px,1vw,4px)]
               rounded-full whitespace-nowrap
               ${
-                order.status === 'Completado'
-                  ? 'bg-green-100 text-green-800'
-                  : order.status === 'En preparación'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-red-100 text-red-800'
+                statusClasses[order.status]
               }
             `}
               >
@@ -121,3 +122,10 @@ function formatRelativeTime(dateString: string): string {
   const diffInDays = Math.floor(diffInHours / 24);
   return `${diffInDays} d`;
 }
+
+const statusClasses = {
+  'Completado': 'bg-green-100 text-green-800',
+  'En preparación': 'bg-yellow-100 text-yellow-800',
+  'Pendiente': 'bg-red-100 text-red-800',
+  'Cancelado': 'bg-gray-100 text-gray-800'
+};

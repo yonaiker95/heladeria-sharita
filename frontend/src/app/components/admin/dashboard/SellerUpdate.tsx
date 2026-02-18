@@ -7,8 +7,11 @@ interface DailySale {
   amount: number;
   // Si la API ya envía porcentaje, puedes incluirlo; si no, lo calculamos
 }
+interface Refresh {
+  refreshTrigger: number;
+}
 
-export const SalesData = ({ refreshTrigger }: { refreshTrigger?: any }) => {
+export const SalesData = (refreshTrigger: Refresh) => {
   const [salesData, setSalesData] = useState<DailySale[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

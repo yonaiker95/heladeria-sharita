@@ -18,9 +18,10 @@ export const adminDashboard = async (
       .gte('created_at', startDate)
       .lte('created_at', endDate + ' 23:59:59');
 
-    const { data: recentOrders , error: errorRecentOrder} = await supabase
+    const { data: recentOrders, error: errorRecentOrder } = await supabase
       .from('sales')
-      .select(`
+      .select(
+        `
       id,
       status,
       invoice_number,
@@ -28,11 +29,30 @@ export const adminDashboard = async (
       total_price,
       created_at,
       customer:users!customer_id ( name, email )
-    `)
-      .order('created_at', { ascending: false }) // Traer las más recientes primero
-      .limit(10); // Solo las últimas 10
+    `
+      )
+      .order('created_at', { ascending: false })
+      .limit(10);
 
-    if (errorSellerUpdate || errorRecentOrder) throw errorSellerUpdate || errorRecentOrder;
+    const { data: topProducts, error: errorTopProducts } = await supabase.rpc(
+      'get_top_selling_products'
+    );
+
+    const { data: lowStockProducts, error: errorLowStockProducts } =
+      await supabase.rpc('get_low_stock_products');
+
+    if (
+      errorSellerUpdate ||
+      errorRecentOrder ||
+      errorTopProducts ||
+      errorLowStockProducts
+    )
+      throw (
+        errorSellerUpdate ||
+        errorRecentOrder ||
+        errorTopProducts ||
+        errorLowStockProducts
+      );
 
     const salesByDay: Record<string, number> = {};
     (sellerUpdate || []).forEach((row) => {
@@ -53,10 +73,12 @@ export const adminDashboard = async (
       const percent = maxTotal > 0 ? Math.round((amount / maxTotal) * 100) : 0;
       return { day: dayCapitalized, amount, percent };
     });
-    console.log('Recent Orders:', recentOrders);
+
     res.json({
       sellerUpdate: salesData,
       recentOrders: recentOrders,
+      topProducts: topProducts,
+      minimumQuantity: lowStockProducts,
     });
   } catch (err) {
     console.error(err);

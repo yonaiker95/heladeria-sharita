@@ -24,9 +24,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
       res.status(403).json({ error: 'Token inválido o expirado.' });
       return;
     }
-    // temporarily cast to any; better: augment Express.Request to include `user`
-    // req.user = decoded as JwtPayload;
-    console.log('Usuario autenticado' + JSON.stringify(decoded));
     next();
   });
 }
