@@ -1,12 +1,23 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { logoutUser } from '../../login/AuthFetch';
 import { UserInfo } from './user';
-
-interface AdminSidebarProps {
-  isMobile?: boolean;
-}
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { Search, Bell, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 interface User {
   id: string;
@@ -19,21 +30,29 @@ interface User {
   };
 }
 
-export const AdminHeader = ({ isMobile }: AdminSidebarProps) => {
-  const [userData, setUserData] = useState<User[]>([]);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+export const AdminHeader = () => {
+  const [userData, setUserData] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
+  const { theme, setTheme } = useTheme();
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
   const router = useRouter();
 
   useEffect(() => {
-    // Función para verificar el ancho
-    const checkSize = () => setIsDesktop(window.innerWidth >= 640);
-
-    checkSize(); // Verificar al cargar
-    window.addEventListener('resize', checkSize); // Escuchar cambios
-    return () => window.removeEventListener('resize', checkSize);
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const data: User[] = await UserInfo(); // Asumimos que devuelve array con un elemento
+        if (data && data.length > 0) {
+          setUserData(data[0]);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
   }, []);
 
   const handleLogout = () => {
@@ -42,233 +61,86 @@ export const AdminHeader = ({ isMobile }: AdminSidebarProps) => {
     });
   };
 
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data: User[] = await UserInfo();
-        setUserData(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSales();
-  }, []);
-
   return (
-    <header className="sticky top-0 w-full h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-end z-40">
-      {/* Lado Izquierdo - Buscador */}
-      <div style={{ flex: '1' }}>
-        <div style={{ position: 'relative' }}>
-          <span
-            style={{
-              position: 'absolute',
-              left: '12px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#9ca3af',
-            }}
-          >
-            <svg
-              style={{ width: '18px', height: '18px' }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </span>
-          <input
+    <header className="sticky top-0 z-40 w-full h-16 bg-background border-b border-border px-6 flex items-center justify-between">
+      {/* Buscador */}
+      <div className="flex-1 max-w-md">
+        <div className="relative">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
             type="text"
             placeholder="Buscar productos, pedidos..."
-            style={{
-              padding: '8px 12px 8px 40px',
-              border: '1px solid #d1d5db',
-              borderRadius: '8px',
-              width: isMobile ? '95%' : '50%',
-              fontSize: '14px',
-              backgroundColor: '#f9fafb',
-            }}
+            className="pl-8 w-full sm:w-96 bg-muted"
           />
         </div>
       </div>
 
-      {/* Lado Derecho - Notificaciones y Perfil */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      {/* Acciones derecha */}
+      <div className="flex items-center gap-4">
         {/* Notificaciones */}
-        <button
-          style={{
-            position: 'relative',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '8px',
-            borderRadius: '50%',
-            backgroundColor: '#f3f4f6',
-          }}
-        >
-          <svg
-            style={{ width: '20px', height: '20px', color: '#374151' }}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <Button variant="ghost" size="icon" className="relative">
+          <Bell className="h-5 w-5" />
+          <Badge
+            variant="destructive"
+            className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-            />
-          </svg>
-          <span
-            style={{
-              position: 'absolute',
-              top: '6px',
-              right: '6px',
-              width: '8px',
-              height: '8px',
-              backgroundColor: '#ef4444',
-              borderRadius: '50%',
-              border: '2px solid white',
-            }}
-          />
-        </button>
+            3
+          </Badge>
+        </Button>
 
         {/* Perfil con Dropdown */}
-        <div style={{ position: 'relative' }}>
-          <button
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-            }}
-          >
-            <div
-              style={{
-                textAlign: 'right',
-                display: isDesktop ? 'block' : 'none', // ✅ Cambio dinámico
-              }}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex items-center gap-3 h-auto p-1"
             >
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#111827',
-                }}
-              >
-                {loading ? 'Cargando...' : userData.name}
-              </p>
-              <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
-                Ver perfil
-              </p>
-            </div>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 'bold',
-                border: '2px solid white',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              }}
-            >
-              {loading ? '?' : userData.name.charAt(0).toUpperCase()}
-            </div>
-          </button>
-
-          {/* Menú Desplegable (Dropdown) */}
-          {isProfileOpen && (
-            <div
-              style={{
-                position: 'absolute',
-                right: 0,
-                top: '50px',
-                width: '200px',
-                backgroundColor: 'white',
-                borderRadius: '8px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                border: '1px solid #e5e7eb',
-                overflow: 'hidden',
-                animation: 'fadeIn 0.2s ease-out',
-              }}
-            >
-              <div
-                style={{ padding: '12px', borderBottom: '1px solid #f3f4f6' }}
-              >
-                <p style={{ margin: 0, fontSize: '12px', color: '#6b7280' }}>
-                  Conectado como
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium leading-none">
+                  {loading ? 'Cargando...' : userData?.name}
                 </p>
-                <p style={{ margin: 0, fontSize: '14px', fontWeight: '600' }}>
-                  {loading ? 'Cargando...' : userData.email}
+                <p className="text-xs text-muted-foreground">Ver perfil</p>
+              </div>
+              <Avatar className="h-9 w-9 border-2 border-background shadow-sm">
+                <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
+                  {loading ? '?' : userData?.name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium">{userData?.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {userData?.email}
                 </p>
               </div>
-              <button
-                onClick={() => router.push('/admin/configuracion')}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  textAlign: 'left',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#374151',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = '#f9fafb')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = 'transparent')
-                }
-              >
-                ⚙️ Configuración
-              </button>
-              <button
-                onClick={handleLogout}
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  textAlign: 'left',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#ef4444',
-                  borderTop: '1px solid #f3f4f6',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = '#fef2f2')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = 'transparent')
-                }
-              >
-                🚪 Cerrar Sesión
-              </button>
-            </div>
-          )}
-        </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => router.push('/admin/settings')}>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Configuración</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-red-600 focus:text-red-600"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Cerrar Sesión</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Botón de cambio de tema */}
+        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Cambiar tema</span>
+        </Button>
       </div>
     </header>
   );
 };
+
 export default AdminHeader;

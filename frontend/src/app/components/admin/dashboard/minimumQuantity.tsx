@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getdashboard } from './DashFetch';
+import { AlertTriangle, Package } from 'lucide-react';
 
 interface minimumQuantity {
   id: string;
@@ -51,134 +52,54 @@ export const MinimumQuantity = (refreshTrigger: Refresh) => {
       </div>
     );
 
-
-
   return (
-    <>
-      {minimumQuantity.map((product) => (
+    <div className="space-y-4">
+        {minimumQuantity.map((product) => (
         <div
           key={product.id}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            padding: 'clamp(10px, 3vw, 12px)',
-            borderRadius: '8px',
-            backgroundColor: '#f9fafb',
-            border: '1px solid #e5e7eb',
-          }}
+          className="flex flex-col gap-3 p-3 rounded-lg bg-muted border border-border hover:bg-accent/50 transition-colors"
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 'clamp(8px, 2vw, 12px)',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'clamp(8px, 2vw, 12px)',
-                minWidth: '0',
-                flex: '1',
-              }}
-            >
-              <div
-                style={{
-                  width: 'clamp(32px, 8vw, 40px)',
-                  height: 'clamp(32px, 8vw, 40px)',
-                  backgroundColor: '#bfdbfe',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: '0',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 'clamp(16px, 4vw, 20px)',
-                    lineHeight: '1',
-                  }}
-                >
-                  🍦
-                </span>
-              </div>
-              <div style={{ minWidth: '0', flex: '1' }}>
-                <p
-                  style={{
-                    fontWeight: '500',
-                    color: '#111827',
-                    fontSize: 'clamp(14px, 3vw, 16px)',
-                    margin: '0 0 4px 0',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {product.name}
-                </p>
-                <div style={{ fontSize: 'clamp(12px, 3vw, 14px)' }} className='flex content-between justify-between'>
-                  <div>
-                    <span style={{ color: '#6b7280' }}>Stock: </span>
-                    <span
-                      style={{
-                        fontWeight: '500',
-                        color:
-                          product.stock < product.minimum_stock
-                            ? '#dc2626'
-                            : '#059669',
-                      }}
-                    >
-                      {product.stock} unidades
-                    </span>
-                  </div>
-                  <div>
-                    <span style={{ color: '#6b7280' }}>Min. Stock: </span>
-                    <span
-                      style={{
-                        fontWeight: '500',
-                        color:'#059669',
-                      }}
-                    >
-                      {product.minimum_stock} unidades
-                    </span>
-                  </div>
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Icono - si es bajo stock mostramos alerta, si no, paquete normal */}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center shrink-0">
+              {product.stock < product.minimum_stock ? (
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              ) : (
+                <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              )}
+            </div>
+
+            {/* Contenido principal */}
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-foreground text-sm sm:text-base truncate mb-1">
+                {product.name}
+              </p>
+
+              {/* Stock actual y mínimo */}
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs sm:text-sm">
+                <div>
+                  <span className="text-muted-foreground">Stock: </span>
+                  <span
+                    className={
+                      product.stock < product.minimum_stock
+                        ? 'font-medium text-red-600 dark:text-red-400'
+                        : 'font-medium text-green-600 dark:text-green-400'
+                    }
+                  >
+                    {product.stock} uds
+                  </span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Mínimo: </span>
+                  <span className="font-medium text-foreground">
+                    {product.minimum_stock} uds
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          {/* <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: '12px',
-              flexWrap: 'wrap',
-            }}
-          >
-            <svg
-              style={{
-                width: 'clamp(14px, 3vw, 16px)',
-                height: 'clamp(14px, 3vw, 16px)',
-                color: '#9ca3af',
-              }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </div> */}
         </div>
       ))}
-    </>
+    </div>
   );
 };

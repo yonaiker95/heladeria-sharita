@@ -1,10 +1,25 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SalesData } from '../../components/admin/dashboard/SellerUpdate';
 import { RecentOrders } from '@/app/components/admin/dashboard/RecentOrders';
 import Link from 'next/link';
 import { BestSellingProducts } from '@/app/components/admin/dashboard/bestSsellingProducts';
 import { MinimumQuantity } from '@/app/components/admin/dashboard/minimumQuantity';
+import { Button } from '@/components/ui/button';
+import {
+  CalendarIcon,
+  RefreshCw,
+  ShoppingCart,
+  Box,
+  Users,
+  HandCoins,
+  BarChart3,
+  ShoppingBag,
+  TrendingUp,
+  AlertTriangle,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export default function AdminDashboard() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -15,28 +30,28 @@ export default function AdminDashboard() {
       value: '$1,250.50',
       change: '+12.5%',
       color: '#10b981',
-      icon: '💰',
+      icon: <HandCoins />,
     },
     {
       title: 'Pedidos Pendientes',
       value: '8',
       change: '+2 nuevos',
       color: '#3b82f6',
-      icon: '🛒',
+      icon: <ShoppingCart />,
     },
     {
       title: 'Productos en Stock',
       value: '156',
       change: '-3 bajos',
       color: '#8b5cf6',
-      icon: '📦',
+      icon: <Box />,
     },
     {
       title: 'Clientes Nuevos',
       value: '24',
       change: '+8.7%',
       color: '#ec4899',
-      icon: '👥',
+      icon: <Users />,
     },
   ]);
 
@@ -55,105 +70,22 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div
-      style={{
-        padding: 'clamp(16px, 4vw, 24px)',
-        backgroundColor: '#f9fafb',
-        minHeight: '100vh',
-        width: '100%',
-        maxWidth: '100%',
-        overflowX: 'hidden',
-        boxSizing: 'border-box',
-      }}
-    >
+    <div className="p-4 md:p-6 bg-muted/50 min-h-screen w-full overflow-x-hidden box-border">
       {/* Header */}
-      <div style={{ marginBottom: 'clamp(24px, 5vw, 32px)' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            marginBottom: '16px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              alignItems: 'flex-start',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-                width: '100%',
-              }}
-            >
-              <h1
-                style={{
-                  fontSize: 'clamp(24px, 6vw, 30px)',
-                  fontWeight: '700',
-                  color: '#111827',
-                  margin: '0',
-                }}
-              >
+      <div className="mb-6 md:mb-8">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-start gap-3">
+            <div className="flex flex-col gap-2 w-full">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
                 Dashboard
               </h1>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  width: '100%',
-                }}
-              >
-                <p
-                  style={{
-                    color: '#6b7280',
-                    fontSize: 'clamp(12px, 3vw, 14px)',
-                    margin: '0',
-                  }}
-                >
+              <div className="flex flex-col gap-3 w-full">
+                <p className="text-sm text-muted-foreground">
                   Bienvenido de vuelta, aquí tienes un resumen de tu heladería
                 </p>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '16px',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <span
-                    style={{
-                      color: '#6b7280',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                    }}
-                  >
-                    <svg
-                      style={{
-                        width: 'clamp(14px, 3vw, 16px)',
-                        height: 'clamp(14px, 3vw, 16px)',
-                        flexShrink: '0',
-                      }}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
+                <div className="flex flex-row items-center gap-4 flex-wrap">
+                  <span className="text-sm text-muted-foreground flex items-center gap-2">
+                    <CalendarIcon className="h-4 w-4" />
                     {new Date().toLocaleDateString('es-ES', {
                       weekday: 'long',
                       year: 'numeric',
@@ -161,45 +93,18 @@ export default function AdminDashboard() {
                       day: 'numeric',
                     })}
                   </span>
-                  <button
+                  <Button
                     onClick={handleRefresh}
                     disabled={isRefreshing}
-                    style={{
-                      padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)',
-                      backgroundColor: isRefreshing ? '#93c5fd' : '#2563eb',
-                      color: 'white',
-                      borderRadius: '8px',
-                      border: 'none',
-                      cursor: isRefreshing ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                      whiteSpace: 'nowrap',
-                      transition: 'background-color 0.2s',
-                    }}
+                    size="sm"
                   >
-                    <svg
-                      style={{
-                        width: 'clamp(14px, 3vw, 16px)',
-                        height: 'clamp(14px, 3vw, 16px)',
-                        animation: isRefreshing
-                          ? 'spin 1s linear infinite'
-                          : 'none',
-                      }}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
+                    <RefreshCw
+                      className={`mr-2 h-4 w-4 ${
+                        isRefreshing ? 'animate-spin' : ''
+                      }`}
+                    />
                     {isRefreshing ? 'Actualizando...' : 'Actualizar'}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -208,449 +113,92 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: 'clamp(16px, 4vw, 24px)',
-          marginBottom: 'clamp(24px, 5vw, 32px)',
-        }}
-      >
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6 md:mb-8">
         {stats.map((stat, idx) => (
-          <div
-            key={idx}
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: 'clamp(16px, 4vw, 24px)',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e5e7eb',
-              minHeight: '140px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                gap: '12px',
-              }}
-            >
-              <div style={{ flex: '1', minWidth: '0' }}>
-                <p
-                  style={{
-                    fontSize: 'clamp(12px, 3vw, 14px)',
-                    color: '#6b7280',
-                    fontWeight: '500',
-                    marginBottom: 'clamp(4px, 1vw, 8px)',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {stat.title}
-                </p>
-                <p
-                  style={{
-                    fontSize: 'clamp(22px, 5vw, 30px)',
-                    fontWeight: '700',
-                    color: '#111827',
-                    marginBottom: 'clamp(4px, 1vw, 8px)',
-                    lineHeight: '1.2',
-                  }}
-                >
-                  {stat.value}
-                </p>
-                <div
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
-                >
-                  <span
-                    style={{
-                      color: stat.change.includes('+') ? '#10b981' : '#ef4444',
-                      fontSize: 'clamp(12px, 3vw, 14px)',
-                    }}
-                  >
-                    {stat.change}
-                  </span>
-                </div>
-              </div>
+          <Card key={idx}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {stat.title}
+              </CardTitle>
               <div
-                style={{
-                  width: 'clamp(40px, 10vw, 48px)',
-                  height: 'clamp(40px, 10vw, 48px)',
-                  borderRadius: '12px',
-                  backgroundColor: stat.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontSize: 'clamp(20px, 5vw, 24px)',
-                  flexShrink: '0',
-                }}
+                className="h-10 w-10 rounded-lg flex items-center justify-center text-white text-xl shrink-0"
+                style={{ backgroundColor: stat.color }}
               >
                 {stat.icon}
               </div>
-            </div>
-          </div>
+            </CardHeader>
+            <CardContent className="flex justify-between items-center gap-4">
+              <div className="text-2xl font-bold text-foreground">
+                {stat.value}
+              </div>
+              <Badge
+                variant={stat.change.includes('+') ? 'success' : 'destructive'}
+                className="mt-1"
+              >
+                {stat.change}
+              </Badge>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
       {/* Charts and Tables */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: 'clamp(16px, 4vw, 24px)',
-          marginBottom: 'clamp(24px, 5vw, 32px)',
-        }}
-      >
-        {/* Sales Chart */}
-        <div
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            minWidth: '0',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: 'clamp(16px, 4vw, 24px)',
-              gap: '12px',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: 'clamp(18px, 4vw, 20px)',
-                fontWeight: '700',
-                color: '#111827',
-                margin: '0',
-              }}
-            >
-              Ventas de la Semana
-            </h2>
-            <div
-              style={{
-                width: 'clamp(20px, 5vw, 24px)',
-                height: 'clamp(20px, 5vw, 24px)',
-                color: '#3b82f6',
-              }}
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-            </div>
-          </div>
-          <SalesData refreshTrigger={refreshTrigger} />
-        </div>
+      <div className="grid gap-4 md:grid-cols-2 mb-6 md:mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle>Ventas de la Semana</CardTitle>
+            <BarChart3 className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <SalesData refreshTrigger={refreshTrigger} />
+          </CardContent>
+        </Card>
 
-        {/* Recent Orders */}
-        <div
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            minWidth: '0',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              marginBottom: 'clamp(16px, 4vw, 24px)',
-              gap: '12px',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: 'clamp(18px, 4vw, 20px)',
-                fontWeight: '700',
-                color: '#111827',
-                margin: '0',
-              }}
-            >
-              Pedidos Recientes
-            </h2>
-            <div
-              style={{
-                width: 'clamp(20px, 5vw, 24px)',
-                height: 'clamp(20px, 5vw, 24px)',
-                color: '#3b82f6',
-              }}
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle>Pedidos Recientes</CardTitle>
+            <ShoppingBag className="h-5 w-5 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <RecentOrders refreshTrigger={refreshTrigger} />
+            <div className="mt-4 text-center">
+              <Link
+                href="/admin/orders"
+                className="inline-block w-full px-3 py-2 text-sm font-medium text-primary border border-border rounded-lg hover:bg-muted transition-colors"
+              >
+                Ver todos los pedidos
+              </Link>
             </div>
-          </div>
-          <RecentOrders refreshTrigger={refreshTrigger} />
-
-          <div className="w-full mt-[clamp(16px,4vw,24px)] px-[clamp(10px,3vw,12px)] py-[clamp(10px,3vw,12px)] text-center text-blue-600 font-medium rounded-lg border border-gray-300 bg-transparent cursor-pointer text-[clamp(12px,3vw,14px)]">
-            <Link href="/admin/orders">Ver todos los pedidos</Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Popular Products and Alerts */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: 'clamp(16px, 4vw, 24px)',
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            minWidth: '0',
-            overflow: 'hidden',
-          }}
-        >
-          <h2
-            style={{
-              fontSize: 'clamp(18px, 4vw, 20px)',
-              fontWeight: '700',
-              color: '#111827',
-              marginBottom: 'clamp(16px, 4vw, 24px)',
-              marginTop: '0',
-            }}
-          >
-            Productos Más Vendidos
-          </h2>
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
-          >
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              Productos Más Vendidos
+              <TrendingUp className="h-5 w-5 text-muted-foreground" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <BestSellingProducts refreshTrigger={refreshTrigger} />
-            {/* {[
-              {
-                name: 'Helado de Vainilla',
-                sales: 142,
-                stock: 45,
-                color: '#fef3c7',
-              },
-              {
-                name: 'Helado de Chocolate',
-                sales: 128,
-                stock: 32,
-                color: '#d6d3d1',
-              },
-              {
-                name: 'Helado de Fresa',
-                sales: 98,
-                stock: 28,
-                color: '#fce7f3',
-              },
-              { name: 'Cono Mixto', sales: 76, stock: 15, color: '#dbeafe' },
-            ].map((product, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px',
-                  padding: 'clamp(10px, 3vw, 12px)',
-                  borderRadius: '8px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 'clamp(8px, 2vw, 12px)',
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'clamp(8px, 2vw, 12px)',
-                      minWidth: '0',
-                      flex: '1',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 'clamp(32px, 8vw, 40px)',
-                        height: 'clamp(32px, 8vw, 40px)',
-                        backgroundColor: product.color,
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: '0',
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: 'clamp(16px, 4vw, 20px)',
-                          lineHeight: '1',
-                        }}
-                      >
-                        🍦
-                      </span>
-                    </div>
-                    <div style={{ minWidth: '0', flex: '1' }}>
-                      <p
-                        style={{
-                          fontWeight: '500',
-                          color: '#111827',
-                          fontSize: 'clamp(14px, 3vw, 16px)',
-                          margin: '0 0 4px 0',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {product.name}
-                      </p>
-                      <p
-                        style={{
-                          fontSize: 'clamp(12px, 3vw, 14px)',
-                          color: '#6b7280',
-                          margin: '0',
-                        }}
-                      >
-                        {product.sales} ventas
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '12px',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  <div style={{ fontSize: 'clamp(12px, 3vw, 14px)' }}>
-                    <span style={{ color: '#6b7280' }}>Stock: </span>
-                    <span
-                      style={{
-                        fontWeight: '500',
-                        color: product.stock < 20 ? '#dc2626' : '#059669',
-                      }}
-                    >
-                      {product.stock} unidades
-                    </span>
-                  </div>
-                  <svg
-                    style={{
-                      width: 'clamp(14px, 3vw, 16px)',
-                      height: 'clamp(14px, 3vw, 16px)',
-                      color: '#9ca3af',
-                    }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            ))} */}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* System Alerts */}
-        <div
-          style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: 'clamp(16px, 4vw, 24px)',
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb',
-            minWidth: '0',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: 'clamp(16px, 4vw, 24px)',
-              alignItems: 'flex-start',
-              gap: '12px',
-            }}
-          >
-            <h2
-              style={{
-                fontSize: 'clamp(18px, 4vw, 20px)',
-                fontWeight: '700',
-                color: '#111827',
-                margin: '0',
-              }}
-            >
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
               Alertas del Sistema
-            </h2>
-            <div
-              style={{
-                width: 'clamp(20px, 5vw, 24px)',
-                height: 'clamp(20px, 5vw, 24px)',
-                color: '#f59e0b',
-              }}
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-            </div>
-          </div>
-          <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
-          >
-              <MinimumQuantity refreshTrigger={refreshTrigger} />
-          </div>
-        </div>
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MinimumQuantity refreshTrigger={refreshTrigger} />
+          </CardContent>
+        </Card>
       </div>
-
-      {/* Animación global para el spinner */}
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }

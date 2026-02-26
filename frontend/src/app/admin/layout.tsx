@@ -1,77 +1,80 @@
 'use client';
 import '@/app/tailwind.css';
+
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import AdminSidebar from '@/app/components/admin/layout/Sidebar';
 import AdminHeader from '@/app/components/admin/layout/Header';
-import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Menu, ChevronLeft, ChevronRight, Moon, Sun } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [sidebarWidth, setSidebarWidth] = useState('250px');
+  const { theme, setTheme } = useTheme();
 
   // Detectar tamaño de pantalla
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      setSidebarOpen(!mobile); // En móvil, sidebar cerrada por defecto
-      setSidebarWidth(mobile ? '0px' : '250px');
+      setSidebarOpen(prev => mobile ? false : true);
     };
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Actualizar ancho del sidebar según estado (abierto/cerrado)
-  useEffect(() => {
-    if (isMobile) {
-      setSidebarWidth(sidebarOpen ? '280px' : '0px');
-    } else {
-      setSidebarWidth(sidebarOpen ? '250px' : '80px');
-    }
-  }, [sidebarOpen, isMobile]);
-
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const toggleSidebar = () => setSidebarOpen(prev => !prev);
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gray-50">
-      {/* Sidebar: en escritorio es relative, en móvil es fixed (controlado dentro del componente) */}
+    <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
+      {/* Sidebar */}
       <AdminSidebar
         isMobile={isMobile}
         sidebarOpen={sidebarOpen}
-        sidebarWidth={sidebarWidth}
         setSidebarOpen={setSidebarOpen}
       />
 
-      {/* Área principal (derecha) */}
+      {/* Área principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header sticky */}
-        <header className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 bg-white border-b border-gray-200 px-[clamp(12px,3vw,24px)] h-[clamp(56px,8vw,64px)] shadow-sm">
-          <button
+        {/* Header sticky con botones */}
+        <header className="sticky top-0 z-10 flex items-center gap-3 bg-background border-b border-border px-4 sm:px-6 h-16 shadow-sm">
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleSidebar}
-            className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-2xl hover:bg-gray-200 transition-colors shrink-0"
+            className="shrink-0"
             aria-label={sidebarOpen ? 'Colapsar menú' : 'Expandir menú'}
           >
-            {isMobile ? '☰' : (sidebarOpen ? '←' : '→')}
-          </button>
-          <div className="flex-1 flex justify-between items-center min-w-0">
-            <AdminHeader isMobile={isMobile} />
+            {isMobile ? (
+              <Menu className="h-5 w-5" />
+            ) : sidebarOpen ? (
+              <ChevronLeft className="h-5 w-5" />
+            ) : (
+              <ChevronRight className="h-5 w-5" />
+            )}
+          </Button>
+
+          {/* Header (con información de usuario, buscador, etc.) */}
+          <div className="flex-1">
+            <AdminHeader />
           </div>
+
+          {/* Botón de cambio de tema */}
+          {/* <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Cambiar tema</span>
+          </Button> */}
         </header>
 
         {/* Contenido scrolleable */}
-        <main className="flex-1 overflow-y-auto p-[clamp(16px,4vw,24px)] bg-gray-50">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-muted/50">
           {children}
         </main>
       </div>
-
-      {/* Overlay para móvil cuando el sidebar está abierto */}
-      {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 backdrop-blur-[2px]"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
     </div>
   );
 }

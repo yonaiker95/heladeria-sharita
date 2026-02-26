@@ -1,145 +1,122 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import {
+  Home,
+  Package,
+  ShoppingCart,
+  Users,
+  DollarSign,
+  BarChart3,
+  Settings,
+  LogOut,
+  IceCream,
+} from 'lucide-react';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
 
-interface AdminSidebarProps {
+interface AdminSidebarMobileProps {
   isMobile?: boolean;
   sidebarOpen?: boolean;
   onClose?: () => void;
-  sidebarWidth?: string;
+  sidebarWidth?: string; // opcional, si quieres mantenerlo
 }
+
+const menuItems = [
+  { name: 'Dashboard', icon: Home, href: '/admin/dashboard' },
+  { name: 'Productos', icon: Package, href: '/admin/productos' },
+  { name: 'Pedidos', icon: ShoppingCart, href: '/admin/pedidos' },
+  { name: 'Clientes', icon: Users, href: '/admin/clientes' },
+  { name: 'Ventas', icon: DollarSign, href: '/admin/ventas' },
+  { name: 'Reportes', icon: BarChart3, href: '/admin/reportes' },
+  { name: 'Configuración', icon: Settings, href: '/admin/configuracion' },
+];
 
 export default function AdminSidebarMobile({
   isMobile,
   sidebarOpen,
   onClose,
-  sidebarWidth,
-}: AdminSidebarProps) {
-  // 1. Detectamos la ruta actual automáticamente para el estado "active"
+}: AdminSidebarMobileProps) {
   const pathname = usePathname();
-  const router = useRouter();
 
-  const menuItems = [
-    { name: 'Dashboard', icon: '🏠', href: '/admin/dashboard' },
-    { name: 'Productos', icon: '📦', href: '/admin/productos' },
-    { name: 'Pedidos', icon: '🛒', href: '/admin/pedidos' },
-    { name: 'Clientes', icon: '👥', href: '/admin/clientes' },
-    { name: 'Ventas', icon: '💰', href: '/admin/ventas' },
-    { name: 'Reportes', icon: '📊', href: '/admin/reportes' },
-    { name: 'Configuración', icon: '⚙️', href: '/admin/configuracion' },
-  ];
-
-  // 2. Manejo de navegación y cierre de menú
-  const handleItemClick = () => {
-    if (isMobile && onClose) {
-      onClose();
-    }
-  };
-
-  return (
-    <>
-      <div
-        style={{
-          width: sidebarWidth,
-          backgroundColor: '#111827',
-          color: 'white',
-          position: isMobile ? 'fixed' : 'relative',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 50,
-          transition: 'width 0.3s ease, transform 0.3s ease',
-          overflow: 'hidden',
-          boxShadow: isMobile && sidebarOpen ? '2px 0 12px rgba(0,0,0,0.5)' : 'none',
-          transform: isMobile && !sidebarOpen ? 'translateX(-100%)' : 'translateX(0)',
-        }}
-      >
-        <div style={{ padding: '20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          
-          {/* Header del Sidebar */}
-          <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-                width: '40px', height: '40px', borderRadius: '12px',
-                background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '22px', flexShrink: 0,
-            }}>🍦</div>
-            {/* Solo mostramos el texto si está abierto o si es móvil (donde siempre está "abierto" al verse) */}
-            {(sidebarOpen || isMobile) && (
-              <div>
-                <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Heladería Sharita</h1>
-                <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0 0' }}>Panel Admin</p>
-              </div>
-            )}
-          </div>
-
-          {/* Menú de Navegación */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-            {menuItems.map((item, idx) => {
-              // Comparamos la ruta actual con el href del item
-              const isActive = pathname === item.href;
-
-              return (
-                <Link
-                  key={idx}
-                  href={item.href}
-                  onClick={handleItemClick}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: (sidebarOpen || isMobile) ? 'flex-start' : 'center',
-                    padding: '12px',
-                    color: isActive ? 'white' : '#9ca3af',
-                    textDecoration: 'none',
-                    backgroundColor: isActive ? '#374151' : 'transparent',
-                    borderRadius: '8px',
-                    gap: '12px',
-                    transition: 'all 0.2s',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <span style={{ fontSize: '20px', width: '24px', textAlign: 'center' }}>
-                    {item.icon}
-                  </span>
-                  {(sidebarOpen || isMobile) && (
-                    <span style={{ fontSize: '14px', fontWeight: isActive ? '600' : '400' }}>
-                      {item.name}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Botón de Logout (Opcional pero recomendado) */}
-          <button 
-            onClick={() => {/* lógica de borrar cookies y redirect */}}
-            style={{
-              marginTop: 'auto', padding: '12px', backgroundColor: 'transparent',
-              border: '1px solid #374151', color: '#f87171', borderRadius: '8px',
-              cursor: 'pointer', display: 'flex', gap: '10px', alignItems: 'center',
-              justifyContent: (sidebarOpen || isMobile) ? 'flex-start' : 'center'
-            }}
-          >
-            🚪 {(sidebarOpen || isMobile) && <span>Cerrar Sesión</span>}
-          </button>
+  // Contenido común del sidebar (se usa tanto en móvil como en desktop)
+  const SidebarContent = (
+    <div className="h-full overflow-y-auto p-5 bg-gray-900 text-white flex flex-col">
+      {/* Logo */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shrink-0">
+          <IceCream className="h-5 w-5 text-white" />
         </div>
+        {(sidebarOpen || isMobile) && (
+          <div>
+            <h1 className="text-lg font-semibold">Heladería Sharita</h1>
+            <p className="text-xs text-gray-400">Panel Admin</p>
+          </div>
+        )}
       </div>
 
-      {/* Overlay: Solo visible en móvil cuando el sidebar está abierto */}
-      {isMobile && sidebarOpen && (
-        <div
-          onClick={onClose}
-          style={{
-            position: 'fixed',
-            top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 40,
-          }}
-        />
-      )}
-    </>
+      {/* Navegación */}
+      <nav className="flex-1 space-y-1">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={`
+                flex items-center gap-3 p-3 rounded-lg transition-all
+                ${sidebarOpen || isMobile ? 'justify-start' : 'justify-center'}
+                ${isActive 
+                  ? 'bg-gray-800 text-white border-l-4 border-pink-500' 
+                  : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                }
+              `}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <item.icon className="h-5 w-5 shrink-0" />
+              {(sidebarOpen || isMobile) && (
+                <span className="text-sm font-medium">{item.name}</span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Botón de logout */}
+      <Button
+        variant="ghost"
+        className="mt-auto gap-3 justify-start text-red-400 hover:text-red-300 hover:bg-gray-800"
+        onClick={() => {/* lógica de logout */}}
+      >
+        <LogOut className="h-5 w-5" />
+        {(sidebarOpen || isMobile) && <span>Cerrar Sesión</span>}
+      </Button>
+    </div>
+  );
+
+  // Vista móvil con Sheet
+  if (isMobile) {
+    return (
+      <Sheet open={sidebarOpen} onOpenChange={(open) => !open && onClose?.()}>
+        <SheetContent side="left" className="p-0 bg-gray-900 text-white border-r-0 w-[280px]">
+          {SidebarContent}
+          color
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
+  // Vista desktop (colapsable)
+  return (
+    <div
+      className={`bg-gray-900 text-white overflow-hidden transition-all duration-300 ${
+        sidebarOpen ? 'w-64' : 'w-20'
+      }`}
+    >
+      {SidebarContent}
+      color2
+    </div>
   );
 }
