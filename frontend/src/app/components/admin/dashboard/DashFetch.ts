@@ -19,5 +19,9 @@ export const getdashboard = async () => {
     }
   );
   const data = await response.json();
+  // console.log('Datos del dashboard:', data);
+  console.log('Dashboard data fetched successfully');
   return data;
 };
+
+export default getdashboard;

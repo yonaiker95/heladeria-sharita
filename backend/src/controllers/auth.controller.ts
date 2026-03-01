@@ -34,22 +34,28 @@ export const loginController = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { _id: user[0].id, role: user[0].role },
+      {
+        _id: user[0].id,
+        role: user[0].role,
+        username: user[0].name,
+        userEmail: user[0].email,
+        is_active: user[0].is_active,
+        permission: user[0].permission.permission,
+      },
       process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '1h' }
     );
-
+    // id, email, name, role, is_active, permission
     return res.status(200).json({
       success: true,
       message: 'Login successful',
-      role: user[0].role,
       token: token,
     });
   } catch (error) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       success: false,
-      message: 'Internal server error', 
-      error: error 
+      message: 'Internal server error',
+      error: error,
     });
   }
 };
@@ -58,9 +64,5 @@ const validatePassword = (
   inputPassword: string,
   storedHash: string
 ): boolean => {
-  return bcrypt.compareSync(
-    inputPassword,
-    storedHash
-    
-  );
+  return bcrypt.compareSync(inputPassword, storedHash);
 };

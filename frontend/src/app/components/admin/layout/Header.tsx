@@ -18,6 +18,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Search, Bell, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useAuthStore } from '@/app/state/userStore';
+import useDashboardStore from '@/app/state/dashboardStore';
 
 interface User {
   id: string;
@@ -31,32 +33,18 @@ interface User {
 }
 
 export const AdminHeader = () => {
-  const [userData, setUserData] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore(state => state.logout);
+  const {clearDashboard} = useDashboardStore();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const data: User[] = await UserInfo(); // Asumimos que devuelve array con un elemento
-        if (data && data.length > 0) {
-          setUserData(data[0]);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
 
   const handleLogout = () => {
     logoutUser().then(() => {
+      logout();
+      clearDashboard();
       router.push('/login');
     });
   };
@@ -97,13 +85,13 @@ export const AdminHeader = () => {
             >
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium leading-none">
-                  {loading ? 'Cargando...' : userData?.name}
+                  {user?.username}
                 </p>
                 <p className="text-xs text-muted-foreground">Ver perfil</p>
               </div>
               <Avatar className="h-9 w-9 border-2 border-background shadow-sm">
                 <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
-                  {loading ? '?' : userData?.name?.charAt(0).toUpperCase()}
+                  {user?.username.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -111,9 +99,13 @@ export const AdminHeader = () => {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium">{userData?.name}</p>
+                <div className="flex flex-row justify-between space-x-2">
+                  <p className="text-sm font-medium">{user?.username}</p>
+                  <p className="text-sm font-medium">{user?.role.charAt(0).toUpperCase()}{user?.role.slice(1).toLowerCase()}</p>
+                </div>
+
                 <p className="text-xs text-muted-foreground">
-                  {userData?.email}
+                  {user?.userEmail}
                 </p>
               </div>
             </DropdownMenuLabel>

@@ -1,12 +1,15 @@
 'use client';
 import { useState } from 'react';
 import { loginUser } from './AuthFetch';
+import { useAuthStore } from '@/app/state/userStore';
+import { useRouter } from 'next/navigation';
 
 export default function LoginWithIllustration() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,15 +18,23 @@ export default function LoginWithIllustration() {
 
     try {
       await loginUser(email, password).then((res) => {
-        if (!res.success === true) {
+        if (!res.success) {
+          // así es más claro
           setError('Credenciales incorrectas');
+          return;
         }
-        window.location.reload();
-    })
+        const userData = {
+          userId: res.userData.userId,
+          role: res.userData.role,
+          username: res.userData.username,
+          userEmail: res.userData.userEmail,
+          is_active: res.userData.is_active,
+          permission: res.userData.permission,
+        };
 
-      
-
-      
+        useAuthStore.getState().setUser(userData);
+        res.userData.role === 'admin' ? router.push('/admin/dashboard') : router.push('user/dashboard')
+      });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -133,15 +144,13 @@ export default function LoginWithIllustration() {
               >
                 Iniciar sesión
               </button>
-              { error && (
+              {error && (
                 <div role="alert">
                   <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
                     Error de inicio de sesión
                   </div>
                   <div className="flex border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700 items-center justify-center">
-                    <p>
-                      {error}
-                    </p>
+                    <p>{error}</p>
                   </div>
                 </div>
               )}
@@ -157,4 +166,7 @@ export default function LoginWithIllustration() {
       </div>
     </div>
   );
+}
+function timeout(arg0: () => void, arg1: number) {
+  throw new Error('Function not implemented.');
 }

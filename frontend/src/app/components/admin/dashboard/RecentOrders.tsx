@@ -1,50 +1,11 @@
-import { useState, useEffect } from 'react';
-import { getdashboard } from './DashFetch';
 import { BadgeCheck, CircleX, Loader, ClockFading } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import useDashboardStore from '@/app/state/dashboardStore';
 
-// Define el tipo de dato que devuelve la API
-interface recentOrders {
-  id: string;
-  invoice_number: string;
-  product_name: string;
-  total_price: string;
-  created_at: string;
-  status: 'Completado' | 'En preparacion' | 'Cancelado' | 'Pendiente';
-  customer: {
-    name: string;
-    email: string;
-  };
-}
+export const RecentOrders = () => {
+  const { isLoading, recentOrders, error } = useDashboardStore();
 
-interface Refresh {
-  refreshTrigger: number;
-}
-
-export const RecentOrders = (refreshTrigger: Refresh) => {
-  const [recentOrders, setRecentOrders] = useState<recentOrders[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await getdashboard();
-        // Asumimos que response es un array de DailySale
-        const data: recentOrders[] = response.recentOrders;
-        setRecentOrders(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSales();
-  }, [refreshTrigger]);
-
-  if (loading)
+  if (isLoading)
     return (
       <div className="p-4 text-center text-gray-500">Cargando Pedidos...</div>
     );
@@ -58,7 +19,7 @@ export const RecentOrders = (refreshTrigger: Refresh) => {
     );
 
   return (
-    <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
+    <div className="flex flex-col gap-3 max-h-75 overflow-y-auto pr-2">
       {recentOrders.map((order, idx) => (
         <div
           key={idx}
@@ -116,19 +77,22 @@ function formatRelativeTime(dateString: string): string {
 }
 
 const statusToVariant: Record<
-  'Completado' | 'En preparacion' | 'Cancelado' | 'Pendiente',
-  | 'default'
+  string,
   | 'link'
+  | 'default'
   | 'success'
-  | 'secondary'
-  | 'destructive'
   | 'outline'
+  | 'destructive'
+  | 'secondary'
   | 'ghost'
+  | 'info'
+  | null
+  | undefined
 > = {
   Completado: 'success',
-  Pendiente: 'default',
+  Pendiente: 'outline',
   Cancelado: 'destructive',
-  'En preparacion': 'secondary',
+  'En Preparacion': 'default',
 };
 
 const statusToIcon: Record<string, React.ReactNode> = {

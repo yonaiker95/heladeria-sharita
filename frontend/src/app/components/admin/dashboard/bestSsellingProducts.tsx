@@ -1,46 +1,15 @@
-import { useState, useEffect } from 'react';
-import { getdashboard } from './DashFetch';
 import { ChevronRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import useDashboardStore from '@/app/state/dashboardStore';
 
-interface topProducts {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  minimum_stock: number;
-  total_sold: number;
-}
 
-interface Refresh {
-  refreshTrigger: number;
-}
 
-export const BestSellingProducts = (refreshTrigger: Refresh) => {
-  const [topProducts, setTopProducts] = useState<topProducts[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await getdashboard();
-        // Asumimos que response es un array de DailySale
-        const data: topProducts[] = response.topProducts;
-        setTopProducts(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSales();
-  }, [refreshTrigger]);
 
-  if (loading)
+export const BestSellingProducts = () => {
+  const {isLoading, topProducts, error} = useDashboardStore();
+
+
+  if (isLoading)
     return (
       <div className="p-4 text-center text-gray-500">Cargando Pedidos...</div>
     );

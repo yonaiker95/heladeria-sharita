@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { supabase } from './../database/connectDB';
 
-export const adminDashboard = async (
+export const adminTestDashboard = async (
   req: Request,
   res: Response
 ): Promise<void> => {
@@ -16,5 +16,3 @@ export const adminDashboard = async (
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
-
-export default adminDashboard;

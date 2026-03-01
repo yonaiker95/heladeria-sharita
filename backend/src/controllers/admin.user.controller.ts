@@ -13,8 +13,6 @@ export const adminUserInfo = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Se requiere el parámetro "id"' });
     }
 
-    // 1. Obtener el perfil del usuario desde la tabla 'users'
-    // Asumo que tienes una tabla pública 'users' con los datos de perfil
     const { data: profile, error: profileError } = await supabase
       .from('users')
       .select('id, email, name, role, is_active, permission')

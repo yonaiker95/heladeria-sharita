@@ -2,15 +2,39 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Save, Bell, Palette, Shield, CreditCard, Users, Store, Mail, Phone, MapPin, Globe, Eye, EyeOff } from 'lucide-react';
+import {
+  Save,
+  Bell,
+  Palette,
+  Shield,
+  CreditCard,
+  Users,
+  Store,
+  Mail,
+  Phone,
+  MapPin,
+  Globe
+} from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AdminSettingsPage() {
   // Estados para cada sección (simulando datos guardados)
@@ -54,41 +78,59 @@ export default function AdminSettingsPage() {
 
   // Estados para cambios temporales (antes de guardar)
   const [dirty, setDirty] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [, setSaved] = useState(false);
 
   const handleGeneralChange = (field: string, value: string) => {
-    setGeneral(prev => ({ ...prev, [field]: value }));
+    setGeneral((prev) => ({ ...prev, [field]: value }));
     setDirty(true);
     setSaved(false);
   };
 
   const handleNotificationChange = (field: string, checked: boolean) => {
-    setNotifications(prev => ({ ...prev, [field]: checked }));
+    setNotifications((prev) => ({ ...prev, [field]: checked }));
     setDirty(true);
     setSaved(false);
   };
 
   const handleAppearanceChange = (field: string, value: string | boolean) => {
-    setAppearance(prev => ({ ...prev, [field]: value }));
+    setAppearance((prev) => ({ ...prev, [field]: value }));
     setDirty(true);
     setSaved(false);
   };
 
   const handleSecurityChange = (field: string, value: string | boolean) => {
-    setSecurity(prev => ({ ...prev, [field]: value }));
+    setSecurity((prev) => ({ ...prev, [field]: value }));
     setDirty(true);
     setSaved(false);
   };
 
   const handleBillingChange = (field: string, value: string) => {
-    setBilling(prev => ({ ...prev, [field]: value }));
+    setBilling((prev) => ({ ...prev, [field]: value }));
     setDirty(true);
     setSaved(false);
   };
 
-  const handleSave = () => {
+  const handleSave = (name: string) => {
+    toast.promise<{ name: string }>(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ name }), 2000)
+        ),
+      {
+        loading: 'Loading...',
+        success: (data) => `${data.name}`,
+        error: 'Error',
+        position: 'top-center',
+      }
+    );
     // Aquí iría la lógica para guardar en backend
-    console.log('Guardando configuración:', { general, notifications, appearance, security, billing });
+    console.log('Guardando configuración:', {
+      general,
+      notifications,
+      appearance,
+      security,
+      billing,
+    });
     setDirty(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
@@ -100,12 +142,18 @@ export default function AdminSettingsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Configuración</h1>
         <div className="flex items-center gap-4">
-          {saved && (
+          {/* {saved && (
             <Alert className="w-auto py-2 bg-green-50 border-green-200 text-green-800">
               <span>✓ Cambios guardados</span>
             </Alert>
-          )}
-          <Button onClick={handleSave} disabled={!dirty} className="gap-2">
+          )} */}
+          <Button
+            onClick={() => {
+              handleSave('Cambios guardados');
+            }}
+            disabled={!dirty}
+            className="gap-2"
+          >
             <Save className="h-4 w-4" />
             Guardar cambios
           </Button>
@@ -145,7 +193,8 @@ export default function AdminSettingsPage() {
             <CardHeader>
               <CardTitle>Información del negocio</CardTitle>
               <CardDescription>
-                Datos generales de tu heladería. Estos datos se usarán en facturas y comunicaciones.
+                Datos generales de tu heladería. Estos datos se usarán en
+                facturas y comunicaciones.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -158,7 +207,9 @@ export default function AdminSettingsPage() {
                       id="storeName"
                       className="pl-8"
                       value={general.storeName}
-                      onChange={(e) => handleGeneralChange('storeName', e.target.value)}
+                      onChange={(e) =>
+                        handleGeneralChange('storeName', e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -167,7 +218,9 @@ export default function AdminSettingsPage() {
                   <Input
                     id="taxId"
                     value={general.taxId}
-                    onChange={(e) => handleGeneralChange('taxId', e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralChange('taxId', e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -180,7 +233,9 @@ export default function AdminSettingsPage() {
                     id="address"
                     className="pl-8"
                     value={general.address}
-                    onChange={(e) => handleGeneralChange('address', e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralChange('address', e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -194,7 +249,9 @@ export default function AdminSettingsPage() {
                       id="phone"
                       className="pl-8"
                       value={general.phone}
-                      onChange={(e) => handleGeneralChange('phone', e.target.value)}
+                      onChange={(e) =>
+                        handleGeneralChange('phone', e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -207,7 +264,9 @@ export default function AdminSettingsPage() {
                       type="email"
                       className="pl-8"
                       value={general.email}
-                      onChange={(e) => handleGeneralChange('email', e.target.value)}
+                      onChange={(e) =>
+                        handleGeneralChange('email', e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -221,7 +280,9 @@ export default function AdminSettingsPage() {
                     id="website"
                     className="pl-8"
                     value={general.website}
-                    onChange={(e) => handleGeneralChange('website', e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralChange('website', e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -242,27 +303,39 @@ export default function AdminSettingsPage() {
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Email</h3>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="emailOrders" className="flex-1">Nuevos pedidos</Label>
+                  <Label htmlFor="emailOrders" className="flex-1">
+                    Nuevos pedidos
+                  </Label>
                   <Switch
                     id="emailOrders"
                     checked={notifications.emailOrders}
-                    onCheckedChange={(c) => handleNotificationChange('emailOrders', c)}
+                    onCheckedChange={(c) =>
+                      handleNotificationChange('emailOrders', c)
+                    }
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="emailLowStock" className="flex-1">Stock bajo</Label>
+                  <Label htmlFor="emailLowStock" className="flex-1">
+                    Stock bajo
+                  </Label>
                   <Switch
                     id="emailLowStock"
                     checked={notifications.emailLowStock}
-                    onCheckedChange={(c) => handleNotificationChange('emailLowStock', c)}
+                    onCheckedChange={(c) =>
+                      handleNotificationChange('emailLowStock', c)
+                    }
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="emailPromotions" className="flex-1">Promociones y ofertas</Label>
+                  <Label htmlFor="emailPromotions" className="flex-1">
+                    Promociones y ofertas
+                  </Label>
                   <Switch
                     id="emailPromotions"
                     checked={notifications.emailPromotions}
-                    onCheckedChange={(c) => handleNotificationChange('emailPromotions', c)}
+                    onCheckedChange={(c) =>
+                      handleNotificationChange('emailPromotions', c)
+                    }
                   />
                 </div>
               </div>
@@ -272,19 +345,27 @@ export default function AdminSettingsPage() {
               <div className="space-y-4">
                 <h3 className="text-lg font-medium">Otros canales</h3>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="smsOrders" className="flex-1">SMS para nuevos pedidos</Label>
+                  <Label htmlFor="smsOrders" className="flex-1">
+                    SMS para nuevos pedidos
+                  </Label>
                   <Switch
                     id="smsOrders"
                     checked={notifications.smsOrders}
-                    onCheckedChange={(c) => handleNotificationChange('smsOrders', c)}
+                    onCheckedChange={(c) =>
+                      handleNotificationChange('smsOrders', c)
+                    }
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="pushNewOrder" className="flex-1">Notificaciones push</Label>
+                  <Label htmlFor="pushNewOrder" className="flex-1">
+                    Notificaciones push
+                  </Label>
                   <Switch
                     id="pushNewOrder"
                     checked={notifications.pushNewOrder}
-                    onCheckedChange={(c) => handleNotificationChange('pushNewOrder', c)}
+                    onCheckedChange={(c) =>
+                      handleNotificationChange('pushNewOrder', c)
+                    }
                   />
                 </div>
               </div>
@@ -324,7 +405,9 @@ export default function AdminSettingsPage() {
                   <Label htmlFor="primaryColor">Color primario</Label>
                   <Select
                     value={appearance.primaryColor}
-                    onValueChange={(v) => handleAppearanceChange('primaryColor', v)}
+                    onValueChange={(v) =>
+                      handleAppearanceChange('primaryColor', v)
+                    }
                   >
                     <SelectTrigger id="primaryColor">
                       <SelectValue />
@@ -357,7 +440,9 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="showLogo" className="flex-1">Mostrar logo en el encabezado</Label>
+                <Label htmlFor="showLogo" className="flex-1">
+                  Mostrar logo en el encabezado
+                </Label>
                 <Switch
                   id="showLogo"
                   checked={appearance.showLogo}
@@ -366,11 +451,15 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <Label htmlFor="animations" className="flex-1">Animaciones</Label>
+                <Label htmlFor="animations" className="flex-1">
+                  Animaciones
+                </Label>
                 <Switch
                   id="animations"
                   checked={appearance.animations}
-                  onCheckedChange={(c) => handleAppearanceChange('animations', c)}
+                  onCheckedChange={(c) =>
+                    handleAppearanceChange('animations', c)
+                  }
                 />
               </div>
             </CardContent>
@@ -389,7 +478,9 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label className="text-base">Autenticación de dos factores</Label>
+                  <Label className="text-base">
+                    Autenticación de dos factores
+                  </Label>
                   <p className="text-sm text-muted-foreground">
                     Añade una capa extra de seguridad a tu cuenta.
                   </p>
@@ -403,10 +494,14 @@ export default function AdminSettingsPage() {
               <Separator />
 
               <div className="space-y-2">
-                <Label htmlFor="sessionTimeout">Tiempo de sesión (minutos)</Label>
+                <Label htmlFor="sessionTimeout">
+                  Tiempo de sesión (minutos)
+                </Label>
                 <Select
                   value={security.sessionTimeout}
-                  onValueChange={(v) => handleSecurityChange('sessionTimeout', v)}
+                  onValueChange={(v) =>
+                    handleSecurityChange('sessionTimeout', v)
+                  }
                 >
                   <SelectTrigger id="sessionTimeout">
                     <SelectValue />
@@ -424,7 +519,12 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label>Contraseña</Label>
                 <div className="flex items-center gap-2">
-                  <Input type="password" value="••••••••" disabled className="flex-1" />
+                  <Input
+                    type="password"
+                    value="••••••••"
+                    disabled
+                    className="flex-1"
+                  />
                   <Button variant="outline">Cambiar</Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -447,10 +547,14 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="paymentMethod">Método de pago por defecto</Label>
+                  <Label htmlFor="paymentMethod">
+                    Método de pago por defecto
+                  </Label>
                   <Select
                     value={billing.paymentMethod}
-                    onValueChange={(v) => handleBillingChange('paymentMethod', v)}
+                    onValueChange={(v) =>
+                      handleBillingChange('paymentMethod', v)
+                    }
                   >
                     <SelectTrigger id="paymentMethod">
                       <SelectValue />
@@ -491,7 +595,9 @@ export default function AdminSettingsPage() {
                     type="email"
                     className="pl-8"
                     value={billing.invoiceEmail}
-                    onChange={(e) => handleBillingChange('invoiceEmail', e.target.value)}
+                    onChange={(e) =>
+                      handleBillingChange('invoiceEmail', e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -503,7 +609,9 @@ export default function AdminSettingsPage() {
                   type="number"
                   step="0.1"
                   value={billing.taxRate}
-                  onChange={(e) => handleBillingChange('taxRate', e.target.value)}
+                  onChange={(e) =>
+                    handleBillingChange('taxRate', e.target.value)
+                  }
                 />
               </div>
             </CardContent>
@@ -524,7 +632,8 @@ export default function AdminSettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
-            Actualmente hay 3 usuarios activos. Puedes gestionarlos desde la sección de usuarios.
+            Actualmente hay 3 usuarios activos. Puedes gestionarlos desde la
+            sección de usuarios.
           </p>
           <Button variant="outline" asChild>
             <a href="/admin/users">Ir a Usuarios</a>
@@ -535,7 +644,9 @@ export default function AdminSettingsPage() {
       {/* Botón de guardado flotante (opcional) */}
       {dirty && (
         <div className="fixed bottom-6 right-6">
-          <Button onClick={handleSave} size="lg" className="shadow-lg gap-2">
+          <Button onClick={() => {
+              handleSave('Cambios guardados');
+            }} size="lg" className="shadow-lg gap-2">
             <Save className="h-5 w-5" />
             Guardar cambios
           </Button>

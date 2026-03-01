@@ -42,6 +42,6 @@ export const UserInfo = async () => {
   const cookies = await getcookies();
   const response = await getUserInfo(cookies.userId, cookies.token as string);
   const userData: User[] = response.profile;
-  console.log('User Data en user.ts:', userData);
+  // console.log('User Data en user.ts:', userData);
   return userData;
 };

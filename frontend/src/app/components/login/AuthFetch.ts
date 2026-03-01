@@ -1,5 +1,6 @@
 'use server';
 
+import { UserDataCookie } from '@/lib/cookieTransfer';
 import { cookies } from 'next/headers';
 
 export async function loginUser(email: string, password: string) {
@@ -24,7 +25,10 @@ export async function loginUser(email: string, password: string) {
       path: '/',
     });
   }
-  return { success: data.success };
+
+  const dataCookie = await UserDataCookie(data.token);
+
+  return { success: data.success, userData: dataCookie };
 }
 
 export async function logoutUser() {
@@ -32,3 +36,5 @@ export async function logoutUser() {
   cookieStore.delete('token');
   return { success: true };
 }
+
+

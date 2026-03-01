@@ -1,45 +1,11 @@
-import { useState, useEffect } from 'react';
-import { getdashboard } from './DashFetch';
+
 import { AlertTriangle, Package } from 'lucide-react';
+import useDashboardStore from '@/app/state/dashboardStore';
 
-interface minimumQuantity {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  minimum_stock: number;
-  deficit: number;
-}
+export const MinimumQuantity = () => {
+  const {isLoading, minimumQuantity, error} = useDashboardStore();
 
-interface Refresh {
-  refreshTrigger: number;
-}
-
-export const MinimumQuantity = (refreshTrigger: Refresh) => {
-  const [minimumQuantity, setMinimumQuantity] = useState<minimumQuantity[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchSales = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await getdashboard();
-        // Asumimos que response es un array de DailySale
-        const data: minimumQuantity[] = response.minimumQuantity;
-        setMinimumQuantity(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSales();
-  }, [refreshTrigger]);
-
-  if (loading)
+  if (isLoading)
     return (
       <div className="p-4 text-center text-gray-500">Cargando stock...</div>
     );

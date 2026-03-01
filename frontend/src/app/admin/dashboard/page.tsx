@@ -1,7 +1,8 @@
 'use client';
-import React, { useState } from 'react';
-import { SalesData } from '../../components/admin/dashboard/SellerUpdate';
-import { RecentOrders } from '@/app/components/admin/dashboard/RecentOrders';
+import { useEffect} from 'react';
+import { SalesData } from '@/app/components/admin/dashboard/sellerUpdate';
+import { RecentOrders } from '@/app/components/admin/dashboard/recentOrders';
+import { CardDashboard } from '@/app/components/admin/dashboard/cardDashboard';
 import Link from 'next/link';
 import { BestSellingProducts } from '@/app/components/admin/dashboard/bestSsellingProducts';
 import { MinimumQuantity } from '@/app/components/admin/dashboard/minimumQuantity';
@@ -9,65 +10,30 @@ import { Button } from '@/components/ui/button';
 import {
   CalendarIcon,
   RefreshCw,
-  ShoppingCart,
-  Box,
-  Users,
-  HandCoins,
   BarChart3,
   ShoppingBag,
   TrendingUp,
   AlertTriangle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import useDashboardStore from '@/app/state/dashboardStore';
 
 export default function AdminDashboard() {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const [stats, setStats] = useState([
-    {
-      title: 'Ventas Hoy',
-      value: '$1,250.50',
-      change: '+12.5%',
-      color: '#10b981',
-      icon: <HandCoins />,
-    },
-    {
-      title: 'Pedidos Pendientes',
-      value: '8',
-      change: '+2 nuevos',
-      color: '#3b82f6',
-      icon: <ShoppingCart />,
-    },
-    {
-      title: 'Productos en Stock',
-      value: '156',
-      change: '-3 bajos',
-      color: '#8b5cf6',
-      icon: <Box />,
-    },
-    {
-      title: 'Clientes Nuevos',
-      value: '24',
-      change: '+8.7%',
-      color: '#ec4899',
-      icon: <Users />,
-    },
-  ]);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // --- LÓGICA DE ACTUALIZACIÓN ---
+  const {fetchDashboard, lastFetched, isLoading} = useDashboardStore();
+  
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    setRefreshTrigger((prev) => prev + 1);
-    // Simulamos una carga de datos de 1.5 segundos
-    setTimeout(() => {
-      // Aquí podrías hacer un fetch a tu API
-      console.log('Datos actualizados');
-      setIsRefreshing(false);
-    }, 1500);
+    fetchDashboard(); // Forzar actualización
   };
+
+  useEffect(() => {
+    const ONE_MINUTES = 60 * 1000;
+    if (!lastFetched || Date.now() - lastFetched > ONE_MINUTES) {
+      console.log('Actualizando dashboard...');
+      fetchDashboard();
+    }
+  }, [lastFetched, fetchDashboard]);
+  
+
 
   return (
     <div className="p-4 md:p-6 bg-muted/50 min-h-screen w-full overflow-x-hidden box-border">
@@ -95,15 +61,15 @@ export default function AdminDashboard() {
                   </span>
                   <Button
                     onClick={handleRefresh}
-                    disabled={isRefreshing}
+                    // disabled={isRefreshing}
                     size="sm"
                   >
                     <RefreshCw
                       className={`mr-2 h-4 w-4 ${
-                        isRefreshing ? 'animate-spin' : ''
+                        isLoading ? 'animate-spin' : ''
                       }`}
                     />
-                    {isRefreshing ? 'Actualizando...' : 'Actualizar'}
+                    {isLoading ? 'Actualizando...' : 'Actualizar'}
                   </Button>
                 </div>
               </div>
@@ -114,32 +80,7 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6 md:mb-8">
-        {stats.map((stat, idx) => (
-          <Card key={idx}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <div
-                className="h-10 w-10 rounded-lg flex items-center justify-center text-white text-xl shrink-0"
-                style={{ backgroundColor: stat.color }}
-              >
-                {stat.icon}
-              </div>
-            </CardHeader>
-            <CardContent className="flex justify-between items-center gap-4">
-              <div className="text-2xl font-bold text-foreground">
-                {stat.value}
-              </div>
-              <Badge
-                variant={stat.change.includes('+') ? 'success' : 'destructive'}
-                className="mt-1"
-              >
-                {stat.change}
-              </Badge>
-            </CardContent>
-          </Card>
-        ))}
+        <CardDashboard />
       </div>
 
       {/* Charts and Tables */}
@@ -150,7 +91,7 @@ export default function AdminDashboard() {
             <BarChart3 className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <SalesData refreshTrigger={refreshTrigger} />
+            <SalesData  />
           </CardContent>
         </Card>
 
@@ -160,7 +101,7 @@ export default function AdminDashboard() {
             <ShoppingBag className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <RecentOrders refreshTrigger={refreshTrigger} />
+            <RecentOrders />
             <div className="mt-4 text-center">
               <Link
                 href="/admin/orders"
@@ -183,7 +124,7 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <BestSellingProducts refreshTrigger={refreshTrigger} />
+            <BestSellingProducts  />
           </CardContent>
         </Card>
 
@@ -195,10 +136,11 @@ export default function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <MinimumQuantity refreshTrigger={refreshTrigger} />
+            <MinimumQuantity  />
           </CardContent>
         </Card>
       </div>
     </div>
   );
 }
+
