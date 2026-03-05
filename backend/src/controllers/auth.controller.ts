@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { supabase } from '../database/connectDB.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-// import { serialize } from 'cookie';
 
 dotenv.config();
 
@@ -40,12 +39,11 @@ export const loginController = async (req: Request, res: Response) => {
         username: user[0].name,
         userEmail: user[0].email,
         is_active: user[0].is_active,
-        permission: user[0].permission.permission,
+        permission: user[0].permission,
       },
       process.env.JWT_SECRET || 'default_secret',
       { expiresIn: '1h' }
     );
-    // id, email, name, role, is_active, permission
     return res.status(200).json({
       success: true,
       message: 'Login successful',

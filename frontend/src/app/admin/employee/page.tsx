@@ -39,11 +39,19 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, Plus, Eye, ToggleLeft, ToggleRight } from 'lucide-react';
+import {
+  Pencil,
+  Trash2,
+  Plus,
+  Eye,
+  ToggleLeft,
+  ToggleRight,
+  User,
+} from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 
 // ---------- Tipos ----------
-type UserRole = 'admin' | 'empleado' | 'cliente';
+type UserRole = 'admin' | 'CFO' | 'Seller' | 'RRHH' | 'SuperAdmin';
 
 interface User {
   id: string;
@@ -64,7 +72,7 @@ const mockUsers: User[] = [
     email: 'juan@example.com',
     phone: '555-1234',
     address: 'Av. Siempre Viva 123',
-    role: 'cliente',
+    role: 'RRHH',
     active: true,
     createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
   },
@@ -73,7 +81,7 @@ const mockUsers: User[] = [
     name: 'María Gómez',
     email: 'maria@example.com',
     phone: '555-5678',
-    role: 'cliente',
+    role: 'Seller',
     active: true,
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
   },
@@ -83,7 +91,7 @@ const mockUsers: User[] = [
     email: 'carlos@example.com',
     phone: '555-9012',
     address: 'Calle Falsa 456',
-    role: 'empleado',
+    role: 'CFO',
     active: true,
     createdAt: new Date().toISOString(),
   },
@@ -100,7 +108,7 @@ const mockUsers: User[] = [
     id: '5',
     name: 'Pedro Ramírez',
     email: 'pedro@example.com',
-    role: 'cliente',
+    role: 'SuperAdmin',
     active: false,
     createdAt: new Date(Date.now() - 86400000 * 10).toISOString(),
   },
@@ -108,16 +116,23 @@ const mockUsers: User[] = [
 
 // Colores para badges según rol
 const roleColors: Record<UserRole, string> = {
-  admin: 'bg-purple-100 text-purple-800 border-purple-300',
-  empleado: 'bg-blue-100 text-blue-800 border-blue-300',
-  cliente: 'bg-green-100 text-green-800 border-green-300',
+  admin:
+    'bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-900 dark:text-indigo-100 dark:border-indigo-700',
+  CFO: 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-100 dark:border-purple-700',
+  Seller:
+    'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-100 dark:border-blue-700',
+  RRHH: 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900 dark:text-green-100 dark:border-green-700',
+  SuperAdmin:
+    'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800',
 };
 
 // Opciones de rol para selects
 const roleOptions: { value: UserRole; label: string }[] = [
   { value: 'admin', label: 'Administrador' },
-  { value: 'empleado', label: 'Empleado' },
-  { value: 'cliente', label: 'Cliente' },
+  { value: 'CFO', label: 'Chief Financial Officer' },
+  { value: 'Seller', label: 'Vendedor' },
+  { value: 'RRHH', label: 'Recursos Humanos' },
+  { value: 'SuperAdmin', label: 'Super Administrador' },
 ];
 
 export default function AdminCustomersPage() {
@@ -145,7 +160,7 @@ export default function AdminCustomersPage() {
       email: '',
       phone: '',
       address: '',
-      role: 'cliente',
+      role: 'Seller',
       active: true,
     });
     setIsDialogOpen(true);
@@ -171,8 +186,8 @@ export default function AdminCustomersPage() {
 
     if (editingUser) {
       // Actualizar
-      setUsers(prev =>
-        prev.map(u =>
+      setUsers((prev) =>
+        prev.map((u) =>
           u.id === editingUser.id
             ? {
                 ...u,
@@ -192,7 +207,7 @@ export default function AdminCustomersPage() {
         address: formData.address || undefined,
         createdAt: new Date().toISOString(),
       };
-      setUsers(prev => [newUser, ...prev]);
+      setUsers((prev) => [newUser, ...prev]);
     }
     setIsDialogOpen(false);
   };
@@ -200,15 +215,15 @@ export default function AdminCustomersPage() {
   // Eliminar usuario (físicamente, aunque en producción podrías desactivar)
   const confirmDelete = () => {
     if (userToDelete) {
-      setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
+      setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
       setUserToDelete(null);
     }
   };
 
   // Activar/desactivar usuario (toggle rápido)
   const toggleActive = (userId: string, currentActive: boolean) => {
-    setUsers(prev =>
-      prev.map(u => (u.id === userId ? { ...u, active: !currentActive } : u))
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, active: !currentActive } : u))
     );
   };
 
@@ -254,16 +269,24 @@ export default function AdminCustomersPage() {
                 <TableCell>{user.phone || '—'}</TableCell>
                 <TableCell>
                   <Badge className={roleColors[user.role]}>
-                    {roleOptions.find(r => r.value === user.role)?.label}
+                    {roleOptions.find((r) => r.value === user.role)?.label}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   {user.active ? (
-                    <Badge variant="success" className="bg-green-100 text-green-800">
+                    <Badge
+                      variant="success"
+                      className="bg-green-100 text-green-800 border-green-300 dark:bg-green-900 dark:text-green-100 dark:border-green-700"
+                    >
                       Activo
                     </Badge>
                   ) : (
-                    <Badge variant="destructive">Inactivo</Badge>
+                    <Badge
+                      variant="destructive"
+                      className="bg-red-100 text-red-800 border-red-300 dark:bg-red-900 dark:text-red-100 dark:border-red-700"
+                    >
+                      Inactivo
+                    </Badge>
                   )}
                 </TableCell>
                 <TableCell>{formatDate(user.createdAt)}</TableCell>
@@ -313,11 +336,14 @@ export default function AdminCustomersPage() {
                           <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                           <AlertDialogDescription>
                             Esta acción no se puede deshacer. Se eliminará
-                            permanentemente el usuario <strong>{userToDelete?.name}</strong>.
+                            permanentemente el usuario{' '}
+                            <strong>{userToDelete?.name}</strong>.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel onClick={() => setUserToDelete(null)}>
+                          <AlertDialogCancel
+                            onClick={() => setUserToDelete(null)}
+                          >
                             Cancelar
                           </AlertDialogCancel>
                           <AlertDialogAction onClick={confirmDelete}>
@@ -332,7 +358,10 @@ export default function AdminCustomersPage() {
             ))}
             {users.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={7}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   No hay usuarios. Agrega uno nuevo.
                 </TableCell>
               </TableRow>
@@ -358,7 +387,9 @@ export default function AdminCustomersPage() {
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
               />
             </div>
@@ -368,7 +399,9 @@ export default function AdminCustomersPage() {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 required
               />
             </div>
@@ -377,7 +410,9 @@ export default function AdminCustomersPage() {
               <Input
                 id="phone"
                 value={formData.phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
@@ -385,20 +420,24 @@ export default function AdminCustomersPage() {
               <Input
                 id="address"
                 value={formData.address}
-                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, address: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Rol</Label>
               <Select
                 value={formData.role}
-                onValueChange={(value: UserRole) => setFormData(prev => ({ ...prev, role: value }))}
+                onValueChange={(value: UserRole) =>
+                  setFormData((prev) => ({ ...prev, role: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {roleOptions.map(option => (
+                  {roleOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -410,14 +449,21 @@ export default function AdminCustomersPage() {
               <Checkbox
                 id="active"
                 checked={formData.active}
-                onCheckedChange={(checked) => 
-                  setFormData(prev => ({ ...prev, active: checked as boolean }))
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    active: checked as boolean,
+                  }))
                 }
               />
               <Label htmlFor="active">Usuario activo</Label>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+              >
                 Cancelar
               </Button>
               <Button type="submit">
@@ -459,7 +505,7 @@ export default function AdminCustomersPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Rol</p>
                 <Badge className={roleColors[viewingUser.role]}>
-                  {roleOptions.find(r => r.value === viewingUser.role)?.label}
+                  {roleOptions.find((r) => r.value === viewingUser.role)?.label}
                 </Badge>
               </div>
               <div>
@@ -471,7 +517,9 @@ export default function AdminCustomersPage() {
                 )}
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Fecha de registro</p>
+                <p className="text-sm text-muted-foreground">
+                  Fecha de registro
+                </p>
                 <p>{new Date(viewingUser.createdAt).toLocaleString()}</p>
               </div>
             </div>

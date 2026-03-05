@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import getdashboard from '@/app/components/admin/dashboard/dashFetch';
+import getdashboard from '@/app/components/admin/dashboard/DashFetch';
 
 export interface SellerUpdateItem {
   day: string;
@@ -89,7 +89,7 @@ export const initialDashboardData: DashboardData = {
 interface DashboardStore extends DashboardData {
   isLoading: boolean;
   error: string | null;
-  lastFetched: number | null; // timestamp de la última actualización exitosa
+  lastFetched: number | null; 
   fetchDashboard: () => Promise<void>;
   clearDashboard: () => void;
 }
@@ -102,13 +102,12 @@ const useDashboardStore = create<DashboardStore>()(
       error: null,
       lastFetched: null,
 
-      fetchDashboard: async () => {
+      fetchDashboard: async (userRole = '') => {
         set({ isLoading: true, error: null });
         try {
-          const data = await getdashboard();
+          const data = await getdashboard(userRole);
           console.log('Fetch Dashboard Response:', data);
 
-          // data debe coincidir con la estructura DashboardData
           set({
             ...data,
             isLoading: false,
