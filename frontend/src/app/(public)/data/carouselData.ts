@@ -2,12 +2,12 @@
 export const carouselItems = [
   {
     image: 'img/carousel-1.jpg',
-    subtitle: 'Traditional & Delicious',
-    title: 'Traditional Ice Cream Since 1950',
+    subtitle: 'Tradicional y delicioso',
+    title: 'Helado tradicional desde 2023',
   },
   {
     image: 'img/carousel-2.jpg',
-    subtitle: 'Traditional & Delicious',
-    title: 'Made From Our Own Organic Milk',
+    subtitle: 'Tradicional y delicioso',
+    title: 'Hecho con nuestra propia manos',
   },
 ];

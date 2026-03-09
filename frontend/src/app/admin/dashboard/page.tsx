@@ -2,8 +2,11 @@
 
 import { useAuthStore } from '@/app/state/userStore';
 import AdminDashboard from './(roldashboard)/adminDashboard';
+import CFODashboard from './(roldashboard)/cfoDashboard';
+import SellerDashboard from './(roldashboard)/sellerDashboard';
+import HRDashboard from './(roldashboard)/rrhhDashboard';
 
-const AdminDashboardPage = () => {
+export default function AdminDashboardPage() {
   const user = useAuthStore((state) => state.user?.permission || ''); // Obtener el permiso del usuario desde el store
   if (user === 'Admin') {
     return <AdminDashboard />;
@@ -14,14 +17,14 @@ const AdminDashboardPage = () => {
   }
 
   if (user === 'CFO') {
-    return <AdminDashboard />;
+    return <CFODashboard />;
   }
   if (user === 'Seller') {
-    return <AdminDashboard />;
+    return <SellerDashboard />;
   }
   if (user === 'RRHH') {
-    return <AdminDashboard />;
+    return <HRDashboard />;
   }
-};
 
-export default AdminDashboardPage;
+  return 
+};

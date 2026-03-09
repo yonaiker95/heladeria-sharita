@@ -13,6 +13,11 @@ export async function proxy(request: NextRequest) {
   const isAuthPage = pathname === '/login' || pathname === '/register';
   const isHome = pathname === '/';
 
+  const excludedRoutes = ['/'];
+  if (excludedRoutes.includes(pathname)) {
+    return NextResponse.next(); // Continúa normalmente (lo maneja Next.js)
+  }
+
   // 2. Si no hay token, proteger rutas privadas
   if (!token) {
     if (isAdminRoute || isUserRoute) {

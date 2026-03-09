@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev:frontend": "nx serve frontend",
-    "dev:backend": "nx serve backend",
+    "frontend": "nx serve frontend",
+    "backend": "nx serve backend",
     "dev": "concurrently \"bun run dev:frontend\" \"bun run dev:backend\"",
     "build": "nx run-many --target=build --all",
     "lint": "nx run-many --target=lint --all"

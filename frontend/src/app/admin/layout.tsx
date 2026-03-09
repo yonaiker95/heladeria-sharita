@@ -2,16 +2,14 @@
 import '@/app/tailwind.css';
 
 import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
 import AdminSidebar from '@/app/components/admin/layout/Sidebar';
 import AdminHeader from '@/app/components/admin/layout/Header';
 import { Button } from '@/components/ui/button';
-import { Menu, ChevronLeft, ChevronRight, Moon, Sun } from 'lucide-react';
+import { Menu, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { theme, setTheme } = useTheme();
 
   // Detectar tamaño de pantalla
   useEffect(() => {
@@ -26,7 +24,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, []);
 
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
-  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
@@ -61,17 +58,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="flex-1">
             <AdminHeader />
           </div>
-
-          {/* Botón de cambio de tema */}
-          {/* <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Cambiar tema</span>
-          </Button> */}
         </header>
 
         {/* Contenido scrolleable */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-muted/50">
+        <main className="flex-1 overflow-y-auto dark:bg-muted/50 bg-primary/20">
           {children}
         </main>
       </div>

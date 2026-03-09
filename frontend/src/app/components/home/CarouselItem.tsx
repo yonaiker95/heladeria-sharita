@@ -19,7 +19,6 @@ function CarouselItem({ item, className }: CarouselItemProps) {
         <div className="p-3" style={{ maxWidth: '900px' }}>
           <h4 className="text-white text-uppercase mb-md-3">{subtitle}</h4>
           <h1 className="display-3 text-white mb-md-4">{title}</h1>
-          <a href="#" className="btn btn-primary py-md-3 px-md-5 mt-2">Learn More</a>
         </div>
       </div>
     </div>

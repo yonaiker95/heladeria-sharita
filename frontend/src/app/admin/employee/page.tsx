@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -51,7 +51,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 
 // ---------- Tipos ----------
-type UserRole = 'admin' | 'CFO' | 'Seller' | 'RRHH' | 'SuperAdmin';
+type UserRole = 'Admin' | 'CFO' | 'Seller' | 'RRHH' | 'SuperAdmin';
 
 interface User {
   id: string;
@@ -60,8 +60,8 @@ interface User {
   phone?: string;
   address?: string;
   role: UserRole;
-  active: boolean;
-  createdAt: string;
+  is_active: boolean;
+  created_at: string;
 }
 
 // ---------- Datos mock ----------
@@ -128,19 +128,36 @@ const roleColors: Record<UserRole, string> = {
 
 // Opciones de rol para selects
 const roleOptions: { value: UserRole; label: string }[] = [
-  { value: 'admin', label: 'Administrador' },
+  { value: 'Admin', label: 'Administrador' },
   { value: 'CFO', label: 'Chief Financial Officer' },
   { value: 'Seller', label: 'Vendedor' },
   { value: 'RRHH', label: 'Recursos Humanos' },
   { value: 'SuperAdmin', label: 'Super Administrador' },
 ];
 
+import { useAuthStore } from '@/app/state/userStore';
+import useDashboardStore, { EmployeeUpdateItem } from '@/app/state/dashboardStore';
+
 export default function AdminCustomersPage() {
+  const { fetchEmployee, lastFetched, isLoading, EmployeeUpdate } = useDashboardStore();
+  const { user } = useAuthStore();
+  const handleRefresh = () => {
+    fetchEmployee(user?.userId, user?.permission);
+  };
+
+  useEffect(() => {
+    const ONE_MINUTES = 60 * 1000;
+    if (!lastFetched || Date.now() - lastFetched > ONE_MINUTES) {
+      console.log('Actualizando dashboard...');
+      fetchEmployee(user?.userId, user?.permission);
+    }
+  }, [lastFetched, fetchEmployee]);
+
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
-  const [viewingUser, setViewingUser] = useState<User | null>(null);
+  const [viewingUser, setViewingUser] = useState<EmployeeUpdateItem>();
 
   // Estado del formulario
   const [formData, setFormData] = useState({
@@ -175,7 +192,7 @@ export default function AdminCustomersPage() {
       phone: user.phone || '',
       address: user.address || '',
       role: user.role,
-      active: user.active,
+      active: user.is_active,
     });
     setIsDialogOpen(true);
   };
@@ -205,7 +222,7 @@ export default function AdminCustomersPage() {
         ...formData,
         phone: formData.phone || undefined,
         address: formData.address || undefined,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
       setUsers((prev) => [newUser, ...prev]);
     }
@@ -235,15 +252,14 @@ export default function AdminCustomersPage() {
       year: 'numeric',
     });
   };
-
   return (
     <div className="container mx-auto p-4 space-y-6">
       {/* Encabezado */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Clientes / Usuarios</h1>
+        <h1 className="text-3xl font-bold">Personal</h1>
         <Button onClick={handleAdd}>
           <Plus className="mr-2 h-4 w-4" />
-          Nuevo Cliente
+          Nuevo Empleado
         </Button>
       </div>
 
@@ -262,8 +278,8 @@ export default function AdminCustomersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
+            {EmployeeUpdate.map((user) => (
+              <TableRow key={user.user_id}>
                 <TableCell className="font-medium">{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone || '—'}</TableCell>
@@ -273,7 +289,7 @@ export default function AdminCustomersPage() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {user.active ? (
+                  {user.is_active ? (
                     <Badge
                       variant="success"
                       className="bg-green-100 text-green-800 border-green-300 dark:bg-green-900 dark:text-green-100 dark:border-green-700"
@@ -289,7 +305,7 @@ export default function AdminCustomersPage() {
                     </Badge>
                   )}
                 </TableCell>
-                <TableCell>{formatDate(user.createdAt)}</TableCell>
+                <TableCell>{formatDate(user.created_at)}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button
@@ -496,12 +512,6 @@ export default function AdminCustomersPage() {
                   <p>{viewingUser.phone}</p>
                 </div>
               )}
-              {viewingUser.address && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Dirección</p>
-                  <p>{viewingUser.address}</p>
-                </div>
-              )}
               <div>
                 <p className="text-sm text-muted-foreground">Rol</p>
                 <Badge className={roleColors[viewingUser.role]}>
@@ -510,7 +520,7 @@ export default function AdminCustomersPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Estado</p>
-                {viewingUser.active ? (
+                {viewingUser.is_active ? (
                   <Badge variant="success">Activo</Badge>
                 ) : (
                   <Badge variant="destructive">Inactivo</Badge>
@@ -520,7 +530,7 @@ export default function AdminCustomersPage() {
                 <p className="text-sm text-muted-foreground">
                   Fecha de registro
                 </p>
-                <p>{new Date(viewingUser.createdAt).toLocaleString()}</p>
+                <p>{new Date(viewingUser.created_at).toLocaleString()}</p>
               </div>
             </div>
           )}

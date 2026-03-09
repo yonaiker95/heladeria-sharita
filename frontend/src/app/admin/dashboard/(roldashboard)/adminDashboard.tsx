@@ -24,20 +24,19 @@ export default function AdminDashboard() {
   const { user } = useAuthStore();
 
   const handleRefresh = () => {
-    fetchDashboard(user?.userId as string); // Forzar actualización
+    fetchDashboard(user?.userId, user?.permission);
   };
 
   useEffect(() => {
     const ONE_MINUTES = 60 * 1000;
     if (!lastFetched || Date.now() - lastFetched > ONE_MINUTES) {
       console.log('Actualizando dashboard...');
-      fetchDashboard(user?.userId as string);
+      fetchDashboard(user?.userId, user?.permission);
     }
   }, [lastFetched, fetchDashboard]);
 
   return (
     <div className="p-4 md:p-6 bg-muted/50 min-h-screen w-full overflow-x-hidden box-border">
-      {/* Header */}
       <div className="mb-6 md:mb-8">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col items-start gap-3">

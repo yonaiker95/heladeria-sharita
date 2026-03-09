@@ -336,7 +336,7 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="flex-1 space-y-4 p-4 md:p-6">
       {/* Encabezado */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Pedidos</h1>
@@ -384,7 +384,7 @@ export default function AdminOrdersPage() {
                       handleStatusChange(order.id, value)
                     }
                   >
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-35">
                       <SelectValue>
                         <Badge className={statusColors[order.status]}>
                           {order.status}
@@ -483,7 +483,7 @@ export default function AdminOrdersPage() {
 
       {/* Modal de creación/edición de pedido */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-150 max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingOrder
@@ -627,7 +627,7 @@ export default function AdminOrdersPage() {
 
       {/* Modal de visualización de detalles */}
       <Dialog open={!!viewingOrder} onOpenChange={() => setViewingOrder(null)}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-125">
           <DialogHeader>
             <DialogTitle>
               Detalles del Pedido #{viewingOrder?.orderNumber}

@@ -21,16 +21,6 @@ import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/app/state/userStore';
 import useDashboardStore from '@/app/state/dashboardStore';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  is_active: boolean;
-  permission: {
-    permission: string;
-  };
-}
 
 export const AdminHeader = () => {
   const { theme, setTheme } = useTheme();
@@ -90,7 +80,7 @@ export const AdminHeader = () => {
                 <p className="text-xs text-muted-foreground">Ver perfil</p>
               </div>
               <Avatar className="h-9 w-9 border-2 border-background shadow-sm">
-                <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
+                <AvatarFallback className="bg-linear-to-br from-cyan-500 to-blue-600 text-white">
                   {user?.username.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -101,7 +91,7 @@ export const AdminHeader = () => {
               <div className="flex flex-col space-y-1">
                 <div className="flex flex-row justify-between space-x-2">
                   <p className="text-sm font-medium">{user?.username}</p>
-                  <p className="text-sm font-medium">{user?.role.charAt(0).toUpperCase()}{user?.role.slice(1).toLowerCase()}</p>
+                  <p className="text-sm font-medium">{user?.permission}</p>
                 </div>
 
                 <p className="text-xs text-muted-foreground">

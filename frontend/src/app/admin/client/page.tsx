@@ -218,10 +218,10 @@ export default function AdminCustomersPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="flex-1 space-y-4 p-4 md:p-6">
       {/* Encabezado */}
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Clientes / Usuarios</h1>
+        <h1 className="text-3xl font-bold">Clientes</h1>
         <Button onClick={handleAdd}>
           <Plus className="mr-2 h-4 w-4" />
           Nuevo Cliente
@@ -339,7 +339,7 @@ export default function AdminCustomersPage() {
 
       {/* Modal de creación/edición */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-125">
           <DialogHeader>
             <DialogTitle>
               {editingUser ? 'Editar Usuario' : 'Nuevo Usuario'}
@@ -426,7 +426,7 @@ export default function AdminCustomersPage() {
 
       {/* Modal de visualización de detalles */}
       <Dialog open={!!viewingUser} onOpenChange={() => setViewingUser(null)}>
-        <DialogContent className="sm:max-w-[450px]">
+        <DialogContent className="sm:max-w-112.5">
           <DialogHeader>
             <DialogTitle>Detalles del Usuario</DialogTitle>
           </DialogHeader>

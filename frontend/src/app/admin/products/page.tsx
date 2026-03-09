@@ -165,10 +165,11 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
+    <div className="flex-1 space-y-4 p-4 md:p-6">
       {/* Encabezado */}
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Productos</h1>
+        
         <Button onClick={handleAdd}>
           <Plus className="mr-2 h-4 w-4" />
           Agregar Producto

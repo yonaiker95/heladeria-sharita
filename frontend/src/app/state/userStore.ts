@@ -11,8 +11,8 @@ export interface UserData {
 }
 
 interface AuthStore {
-  user: UserData | null;
-  setUser: (user: UserData | null) => void;
+  user: UserData;
+  setUser: (user: UserData) => void;
   logout: () => void;
 }
 
