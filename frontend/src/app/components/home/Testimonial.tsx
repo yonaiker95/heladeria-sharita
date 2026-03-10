@@ -6,22 +6,28 @@ import "slick-carousel/slick/slick-theme.scss";
 const Testimonial: React.FC = () => {
   const testimonials = [
     {
-      text: "Dolor eirmod diam stet kasd sed. Aliqu rebum est eos. Rebum elitr dolore et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam",
-      image: "/img/testimonial-1.jpg",
-      name: "Client Name",
-      profession: "Profession",
+      text: '"El helado de parchita de Sharita me transporta a mi infancia en La Pastora. Misma cremosidad, mismo sabor. ¡Imperdible!"',
+      image: "/img/testimonial-1.png",
+      name: "Andrea R.",
+      profession: "Estudiante",
     },
     {
-      text: "Dolor eirmod diam stet kasd sed. Aliqu rebum est eos. Rebum elitr dolore et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam",
-      image: "/img/testimonial-2.jpg",
-      name: "Client Name",
-      profession: "Profession",
+      text: '"Mi lugar feliz en Caracas. Un ambiente familiar, el mejor mantecado del mundo y la sonrisa de Nayarith en la caja. ¡Así da gusto pagar!"',
+      image: "/img/testimonial-3.png",
+      name: "Carlos R.",
+      profession: "Ing. Civil",
     },
     {
-      text: "Dolor eirmod diam stet kasd sed. Aliqu rebum est eos. Rebum elitr dolore et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam",
-      image: "/img/testimonial-3.jpg",
-      name: "Client Name",
-      profession: "Profession",
+      text: '"Descubrí Sharita por un video en Instagram y fui con mi familia. ¡Espectacular! La atención de Paola en redes fue súper rápida y cuando llegamos, Loreinis nos recibió como en casa. Repetiremos."',
+      image: "/img/testimonial-2.png",
+      name: "María G. ",
+      profession: "Contadora",
+    },
+    {
+      text: '"Gracias a Sharita por endulzar mis cumpleaños por 3 años consecutivos. Sigan así, con esa receta original que nos hace únicos."',
+      image: "/img/testimonial-4.png",
+      name: "José M. ",
+      profession: "Profesor",
     },
   ];
 
@@ -42,7 +48,7 @@ const Testimonial: React.FC = () => {
         <div className="row justify-content-center">
           <div className="col-lg-6">
             <h1 className="section-title position-relative text-center mb-5">
-              Clients Say About Our Famous Ice Cream
+              Opiniones que endulzan
             </h1>
           </div>
         </div>

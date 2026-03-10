@@ -5,6 +5,7 @@ const Footer: React.FC = () => {
   return (
     <>
       <div
+      id='contact'
         className="container-fluid footer bg-light py-5"
         style={{ marginTop: '90px' }}
       >

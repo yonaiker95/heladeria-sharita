@@ -1,6 +1,6 @@
 'use client';
-import React, { useEffect, useRef } from "react";
-import "owl.carousel/dist/assets/owl.carousel.css";
+import React, { useEffect, useRef } from 'react';
+import 'owl.carousel/dist/assets/owl.carousel.css';
 
 const Team: React.FC = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -9,20 +9,20 @@ const Team: React.FC = () => {
     let $: any;
 
     const init = async () => {
-      const jq = (await import("jquery")).default as any;
+      const jq = (await import('jquery')).default as any;
       (window as any).jQuery = jq;
       (window as any).$ = jq;
 
-      await import("owl.carousel");
+      await import('owl.carousel');
       $ = jq;
 
       const el = carouselRef.current;
       if (!el) return;
 
-      if ($(el).hasClass("owl-loaded")) {
-        $(el).trigger("destroy.owl.carousel");
-        $(el).removeClass("owl-loaded");
-        $(el).find(".owl-stage-outer").children().unwrap();
+      if ($(el).hasClass('owl-loaded')) {
+        $(el).trigger('destroy.owl.carousel');
+        $(el).removeClass('owl-loaded');
+        $(el).find('.owl-stage-outer').children().unwrap();
       }
 
       $(el).owlCarousel({
@@ -46,8 +46,8 @@ const Team: React.FC = () => {
     return () => {
       try {
         const el = carouselRef.current;
-        if ($ && el && $(el).data("owl.carousel")) {
-          $(el).trigger("destroy.owl.carousel");
+        if ($ && el && $(el).data('owl.carousel')) {
+          $(el).trigger('destroy.owl.carousel');
         }
       } catch {
         /* noop */
@@ -56,10 +56,26 @@ const Team: React.FC = () => {
   }, []);
 
   const team = [
-    { name: "Full Name", role: "Designation", image: "/img/team-1.jpg" },
-    { name: "Full Name", role: "Designation", image: "/img/team-2.jpg" },
-    { name: "Full Name", role: "Designation", image: "/img/team-3.jpg" },
-    { name: "Full Name", role: "Designation", image: "/img/team-4.jpg" },
+    {
+      name: 'Frank Dávila',
+      role: 'Fundador & Director General',
+      image: '/img/team-1.png',
+    },
+    {
+      name: 'Paola',
+      role: 'Cajera & Asistente Administrativa',
+      image: '/img/team-2.png',
+    },
+    {
+      name: 'Loreinis',
+      role: 'Atención al Cliente & Cajera Principal',
+      image: '/img/team-3.png',
+    },
+    {
+      name: 'Nayarith',
+      role: 'Atención al Cliente & Community Manager',
+      image: '/img/team-4.png',
+    },
   ];
 
   return (
@@ -67,9 +83,12 @@ const Team: React.FC = () => {
       <div className="container py-5">
         <div className="row">
           <div className="col-lg-6">
-            <h1 className="section-title position-relative mb-5">
-              Experienced & Most Famous Ice Cream Chefs
+            <h1 className="section-title position-relative">
+              La Familia Sharita
             </h1>
+            <h5 className=" position-relative mb-5">
+              Conoce a las personas que hacen posible tu momento de felicidad
+            </h5>
           </div>
           <div className="col-lg-6 mb-5 mb-lg-0 pb-5 pb-lg-0"></div>
         </div>
@@ -84,12 +103,12 @@ const Team: React.FC = () => {
                       className="rounded-circle w-100 h-100"
                       src={t.image}
                       alt={t.name}
-                      style={{ objectFit: "cover" }}
+                      style={{ objectFit: 'cover' }}
                     />
                   </div>
                   <div
                     className="position-relative text-center bg-light rounded px-4 py-5"
-                    style={{ marginTop: "-100px" }}
+                    style={{ marginTop: '-100px' }}
                   >
                     <h3 className="font-weight-bold mt-5 mb-3 pt-5">
                       {t.name}

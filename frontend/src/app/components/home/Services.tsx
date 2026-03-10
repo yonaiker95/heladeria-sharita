@@ -62,38 +62,44 @@ const Services: React.FC = () => {
 
   const services = [
     {
-      title: "Quality Maintain",
+      title: "Helados Artesanales",
       description:
-        "Dolor nonumy sed eos sed lorem diam amet eos magna. Dolor kasd lorem duo stet kasd justo",
+        "Elaborados con recetas familiares y los mejores ingredientes, garantizando sabor y cremosidad inigualables",
       image: "/img/service-1.jpg",
     },
     {
-      title: "Individual Approach",
+      title: "Pre-órdenes por WhatsApp",
       description:
-        "Dolor nonumy sed eos sed lorem diam amet eos magna. Dolor kasd lorem duo stet kasd justo",
+        "Encarga tu pedido con anticipación y evita esperas. ¡Solo un mensaje y lo tienes listo!",
       image: "/img/service-2.jpg",
     },
     {
-      title: "Celebration Ice Cream",
+      title: "Servicio para Eventos",
       description:
-        "Dolor nonumy sed eos sed lorem diam amet eos magna. Dolor kasd lorem duo stet kasd justo",
+        "Llevamos el sabor de Sharita a tus celebraciones: cumpleaños, reuniones y fiestas empresariales.",
       image: "/img/service-3.jpg",
     },
     {
-      title: "Delivery To Any Point",
+      title: "Promociones Exclusivas",
       description:
-        "Dolor nonumy sed eos sed lorem diam amet eos magna. Dolor kasd lorem duo stet kasd justo",
+        "Entérate de nuestras ofertas y lanzamientos primero a través de nuestras redes sociales.",
       image: "/img/service-4.jpg",
+    },
+    {
+      title: "Ambiente Familiar",
+      description:
+        "Un espacio acogedor para compartir con amigos y seres queridos, con la calidez que nos caracteriza.",
+      image: "/img/service-5.png",
     },
   ];
 
   return (
-    <div className="container-fluid py-5">
+    <div id="service" className="container-fluid py-5">
       <div className="container py-5">
         <div className="row">
-          <div className="col-lg-6">
+          <div className="col-lg-8">
             <h1 className="section-title position-relative mb-5">
-              Best Services We Provide For Our Clients
+              🍨 Los mejores servicios que brindamos a nuestros clientes
             </h1>
           </div>
           <div className="col-lg-6 mb-5 mb-lg-0 pb-5 pb-lg-0" />
@@ -121,12 +127,12 @@ const Services: React.FC = () => {
                       {s.title}
                     </h5>
                     <p>{s.description}</p>
-                    <a
+                    {/* <a
                       href="#!"
                       className="border-bottom border-secondary text-decoration-none text-secondary"
                     >
                       Learn More
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               ))}

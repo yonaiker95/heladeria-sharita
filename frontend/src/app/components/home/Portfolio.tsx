@@ -11,7 +11,7 @@ const Portfolio: React.FC = () => {
   ];
 
   return (
-    <div className="container-fluid my-5 py-5 px-0">
+    <div id="gallery" className="container-fluid my-5 py-5 px-0">
       <div className="row justify-content-center m-0">
         <div className="col-lg-5">
           <h1 className="section-title position-relative text-center mb-5">

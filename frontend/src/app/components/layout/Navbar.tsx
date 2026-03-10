@@ -21,7 +21,7 @@ function Navbar() {
           </button>
           <div className="collapse navbar-collapse justify-content-between" id="navbarCollapse">
             <div className="navbar-nav ml-auto py-0">
-              <NavLink href="/">Inicio</NavLink>
+              {/* <NavLink href="/">Inicio</NavLink> */}
               <NavLink href="/#about">Sobre Nosotros</NavLink>
               <NavLink href="/#product">Productos</NavLink>
             </div>
@@ -32,7 +32,7 @@ function Navbar() {
             </Link>
             <div className="navbar-nav mr-auto py-0">
               <NavLink href="/#service">Servicios</NavLink>
-              <NavLink href="/#gallery">Galeria</NavLink>
+              {/* <NavLink href="/#gallery">Galeria</NavLink> */}
               <NavLink href="/#contact">Contacto</NavLink>
             </div>
           </div>
