@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
             </div>
 
             <div className="col-12 mb-4">
-              <a className="btn btn-outline-secondary btn-social mr-2" href="#">
+              {/* <a className="btn btn-outline-secondary btn-social mr-2" href="#">
                 <i className="fab fa-twitter"></i>
               </a>
               <a className="btn btn-outline-secondary btn-social mr-2" href="#">
@@ -28,8 +28,8 @@ const Footer: React.FC = () => {
               </a>
               <a className="btn btn-outline-secondary btn-social mr-2" href="#">
                 <i className="fab fa-linkedin-in"></i>
-              </a>
-              <a className="btn btn-outline-secondary btn-social" href="#">
+              </a> */}
+              <a className="btn btn-outline-secondary btn-social" href="https://www.instagram.com/helados.sharita">
                 <i className="fab fa-instagram"></i>
               </a>
             </div>
@@ -37,14 +37,14 @@ const Footer: React.FC = () => {
             <div className="col-12 mt-2 mb-4">
               <div className="row">
                 <div className="col-sm-6 text-center text-sm-right border-right mb-3 mb-sm-0">
-                  <h5 className="font-weight-bold mb-2">Get In Touch</h5>
-                  <p className="mb-2">123 Street, New York, USA</p>
-                  <p className="mb-0">+012 345 67890</p>
+                  <h5 className="font-weight-bold mb-2">Ubicacion</h5>
+                  <p className="mb-2">La Pastora, Caracas</p>
+                  <p className="mb-0">+58(424)2871198 </p>
                 </div>
                 <div className="col-sm-6 text-center text-sm-left">
-                  <h5 className="font-weight-bold mb-2">Opening Hours</h5>
-                  <p className="mb-2">Mon – Sat, 8AM – 5PM</p>
-                  <p className="mb-0">Sunday: Closed</p>
+                  <h5 className="font-weight-bold mb-2">Horario</h5>
+                  <p className="mb-2">Lunes – Domingo</p>
+                  <p className="mb-2">10AM – 8PM</p>
                 </div>
               </div>
             </div>

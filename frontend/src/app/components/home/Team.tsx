@@ -114,7 +114,7 @@ const Team: React.FC = () => {
                       {t.name}
                     </h3>
                     <h6 className="text-uppercase text-muted mb-4">{t.role}</h6>
-                    <div className="d-flex justify-content-center pt-1">
+                    {/* <div className="d-flex justify-content-center pt-1">
                       <a
                         className="btn btn-outline-secondary btn-social mr-2"
                         href="#"
@@ -133,7 +133,7 @@ const Team: React.FC = () => {
                       >
                         <i className="fab fa-linkedin-in"></i>
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ))}

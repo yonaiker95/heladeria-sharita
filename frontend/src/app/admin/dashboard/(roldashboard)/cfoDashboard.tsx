@@ -21,13 +21,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 import {
   BarChart,
@@ -45,15 +41,10 @@ import {
   Cell,
 } from 'recharts';
 import {
-  Menu,
   TrendingUp,
   DollarSign,
-  CreditCard,
   Landmark,
   MoreHorizontal,
-  Search,
-  Download,
-  FileText,
   PieChart as PieChartIcon,
 } from 'lucide-react';
 

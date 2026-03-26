@@ -5,7 +5,7 @@
   "scripts": {
     "frontend": "nx serve frontend",
     "backend": "nx serve backend",
-    "dev": "concurrently \"bun run dev:frontend\" \"bun run dev:backend\"",
+    "dev": "concurrently \"bun run frontend\" \"bun run backend\"",
     "build": "nx run-many --target=build --all",
     "lint": "nx run-many --target=lint --all"
   },

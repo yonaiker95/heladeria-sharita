@@ -60,7 +60,7 @@ interface User {
   phone?: string;
   address?: string;
   role: UserRole;
-  is_active: boolean;
+  is_active?: boolean;
   created_at: string;
 }
 
@@ -116,7 +116,7 @@ const mockUsers: User[] = [
 
 // Colores para badges según rol
 const roleColors: Record<UserRole, string> = {
-  admin:
+  Admin:
     'bg-indigo-100 text-indigo-800 border-indigo-300 dark:bg-indigo-900 dark:text-indigo-100 dark:border-indigo-700',
   CFO: 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-100 dark:border-purple-700',
   Seller:
@@ -139,11 +139,8 @@ import { useAuthStore } from '@/app/state/userStore';
 import useDashboardStore, { EmployeeUpdateItem } from '@/app/state/dashboardStore';
 
 export default function AdminCustomersPage() {
-  const { fetchEmployee, lastFetched, isLoading, EmployeeUpdate } = useDashboardStore();
+  const { fetchEmployee, lastFetched, EmployeeUpdate } = useDashboardStore();
   const { user } = useAuthStore();
-  const handleRefresh = () => {
-    fetchEmployee(user?.userId, user?.permission);
-  };
 
   useEffect(() => {
     const ONE_MINUTES = 60 * 1000;

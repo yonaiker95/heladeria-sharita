@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import getdashboard, { getEmployee } from '@/app/components/admin/dashboard/DashFetch';
+import getdashboard, {
+  getEmployee,
+} from '@/app/components/admin/dashboard/DashFetch';
 
 // Tipos existentes
 export interface SellerUpdateItem {
@@ -27,6 +29,7 @@ export interface RecentOrder {
 
 export interface TopProduct {
   id: string;
+  product_id: string;
   name: string;
   description: string;
   price: number;
@@ -168,7 +171,6 @@ export interface DashboardApiResponse extends DashboardData {
   role: string;
 }
 
-
 // Estado inicial (sin hhrrData)
 export const initialDashboardData: DashboardData = {
   sellerUpdate: [],
@@ -179,13 +181,13 @@ export const initialDashboardData: DashboardData = {
   pendingOrders: { total: 0, today: 0 },
   stockInfo: { totalProducts: 0, lowStockCount: 0 },
   newCustomers: { total: 0, changePercent: 0 },
-  EmployeeUpdate: []
+  EmployeeUpdate: [],
 };
 
 interface DashboardStore extends DashboardData {
   isLoading: boolean;
   error: string | null;
-  lastFetched: number | null; 
+  lastFetched: number | null;
   fetchDashboard: (userId: string, userRole: string) => Promise<void>;
   fetchEmployee: (userId: string, userRole: string) => Promise<void>;
   clearDashboard: () => void;
@@ -202,7 +204,10 @@ const useDashboardStore = create<DashboardStore>()(
       fetchDashboard: async (userId = '', userRole = '') => {
         set({ isLoading: true, error: null });
         try {
-          const data: DashboardApiResponse = await getdashboard(userId, userRole);
+          const data: DashboardApiResponse = await getdashboard(
+            userId,
+            userRole
+          );
           console.log('Fetch Dashboard Response:', data);
 
           // Extraemos solo las propiedades de DashboardData (ignoramos authorized y role)
@@ -225,7 +230,10 @@ const useDashboardStore = create<DashboardStore>()(
       fetchEmployee: async (userId = '', userRole = '') => {
         set({ isLoading: true, error: null });
         try {
-          const data: DashboardApiResponse = await getEmployee(userId, userRole);
+          const data: DashboardApiResponse = await getEmployee(
+            userId,
+            userRole
+          );
           console.log('Fetch Employee Response:', data);
 
           const { authorized, role, ...dashboardData } = data;

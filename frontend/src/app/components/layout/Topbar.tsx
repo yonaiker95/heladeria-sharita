@@ -16,7 +16,7 @@ function Topbar() {
           </div>
           <div className="col-md-6 text-center text-lg-right">
             <div className="d-inline-flex align-items-center">
-              <a className="text-white px-3 disabled" href="">
+              {/* <a className="text-white px-3 disabled" href="">
                 <i className="fab fa-facebook-f"></i>
               </a>
               <a className="text-white px-3 disabled" href="">
@@ -24,13 +24,13 @@ function Topbar() {
               </a>
               <a className="text-white px-3 disabled" href="">
                 <i className="fab fa-linkedin-in"></i>
-              </a>
+              </a> */}
               <a className="text-white px-3" href="https://www.instagram.com/helados.sharita">
                 <i className="fab fa-instagram"></i>
               </a>
-              <a className="text-white pl-3 disabled" href="">
+              {/* <a className="text-white pl-3 disabled" href="">
                 <i className="fab fa-youtube"></i>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

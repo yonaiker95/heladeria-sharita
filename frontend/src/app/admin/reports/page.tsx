@@ -276,7 +276,7 @@ export default function ReportsPage() {
             <CardDescription>Últimos 7 días</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-75">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -298,7 +298,7 @@ export default function ReportsPage() {
             <CardDescription>Distribución actual</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-75">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -306,7 +306,9 @@ export default function ReportsPage() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) =>
+                      percent !== undefined ? `${name} ${(percent * 100).toFixed(0)}%` : name
+                    }
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
@@ -332,7 +334,7 @@ export default function ReportsPage() {
             <CardDescription>Top 5 productos</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-75">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topProductsData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />

@@ -24,36 +24,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
 import {
   Package,
   ShoppingCart,
   Users,
-  DollarSign,
   MoreHorizontal,
-  Search,
-  PlusCircle,
 } from 'lucide-react';
 
 // Datos de ejemplo
-const salesData = [
-  { name: 'Ene', total: 2400 },
-  { name: 'Feb', total: 1398 },
-  { name: 'Mar', total: 9800 },
-  { name: 'Abr', total: 3908 },
-  { name: 'May', total: 4800 },
-  { name: 'Jun', total: 3800 },
-];
 
 const recentOrders = [
   {
